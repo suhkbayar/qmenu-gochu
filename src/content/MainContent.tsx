@@ -16,14 +16,14 @@ const MainContent = () => {
   const [loading, setLoading] = useState(false);
   const isValid = isValidToken();
   const { id } = router.query;
-  const { setParticipant, participant, order, load, isPartner } = useCallStore();
+  const { setParticipant, order, load } = useCallStore();
   const [getBranch, { data }] = useLazyQuery(GET_BRANCH, {
     pollInterval: 180000,
     fetchPolicy: 'network-only',
     onCompleted(data) {
       setAccessToken(data.getParticipant.token);
       setParticipant(data.getParticipant);
-      if (data.getParticipant.orderable && isEmpty(order)) {
+      if (data.getParticipant.orderable && isEmpty(order.items)) {
         load(emptyOrder);
       }
       setLoading(false);

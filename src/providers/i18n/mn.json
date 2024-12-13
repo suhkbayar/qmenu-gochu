@@ -175,6 +175,18 @@
     "Friday": "Баасан",
     "Saturday": "Бямба",
     "Sunday": "Ням",
+
+    "Mon": "Даваа",
+    "Tue": "Мягмар",
+    "Wed": "Лхагва",
+    "Thu": "Пүрэв",
+    "Fri": "Баасан",
+    "Sat": "Бямба",
+    "Sun": "Ням",
+
+    "Today": "Өнөөдөр",
+    "Tomorrow": "Маргааш",
+
     "ConfirmFeedBack": "Таны санал хүсэлт амжилттай илгээгдлээ",
     "RestaurantName": "Рестораны нэр",
     "FacebookLink": "Facebook page линк ",

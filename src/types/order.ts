@@ -55,6 +55,7 @@ export interface ICustomerOrder {
   totalQuantity: number;
   state: string;
   type?: string;
+  deliveryDate?: string;
   buyer?: string;
   register?: string;
   vatType?: string;

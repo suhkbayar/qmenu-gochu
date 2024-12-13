@@ -16,6 +16,7 @@ import { AlertModal } from '../helpers/alert';
 import SubscriptionProvider from '../providers/SubscriptionProvider';
 import { useRouter } from 'next/router';
 import 'react-simple-keyboard/build/css/index.css';
+import { NotificationProvider } from '../providers/notification';
 
 const payload = getPayload();
 
@@ -62,15 +63,17 @@ function MyApp({ Component, pageProps }: AppProps) {
       <ApolloProvider client={client}>
         <I18nextProvider i18n={i18next}>
           <AuthProvider>
-            <ThemeProvider attribute="class">
-              <Notification />
-              <AlertModal />
-              <SubscriptionProvider>
-                <div className={`animate__animated ${animate}`}>
-                  <Component {...pageProps} />
-                </div>
-              </SubscriptionProvider>
-            </ThemeProvider>
+            <NotificationProvider>
+              <ThemeProvider attribute="class">
+                <Notification />
+                {/* <AlertModal /> */}
+                <SubscriptionProvider>
+                  <div className={`animate__animated ${animate}`}>
+                    <Component {...pageProps} />
+                  </div>
+                </SubscriptionProvider>
+              </ThemeProvider>
+            </NotificationProvider>
           </AuthProvider>
         </I18nextProvider>
       </ApolloProvider>

@@ -6,14 +6,26 @@ import { AiOutlineHistory } from 'react-icons/ai';
 import { useCallStore } from '../contexts/call.store';
 import { isEmpty } from 'lodash';
 import { useContext, useState } from 'react';
-import { AuthContext } from '../providers/auth';
+import { AuthContext, getPayload } from '../providers/auth';
 import { DraftModal } from '../components';
+import { FiUser } from 'react-icons/fi';
+import { useQuery } from '@apollo/client';
+import { ME } from '../graphql/query';
 
 const BottonNavigation = () => {
   const router = useRouter();
   const { qr } = useContext(AuthContext);
-  const { order } = useCallStore();
+  const { order, setUser } = useCallStore();
   const [visible, setVisible] = useState(false);
+  const role = getPayload()?.role;
+
+  const { data: userData } = useQuery(ME, {
+    skip: role !== 'customer',
+    onCompleted: (data) => {
+      setUser(data.me);
+    },
+  });
+
   const onPush = (item: string) => {
     router.push(item);
   };
@@ -27,6 +39,14 @@ const BottonNavigation = () => {
       setVisible(true);
     } else {
       router.push(`partner?id=${qr}`);
+    }
+  };
+
+  const goUser = () => {
+    if (!isEmpty(userData?.me)) {
+      router.push(`/profile?id=${qr}`);
+    } else {
+      router.push(`/login?id=${qr}`);
     }
   };
 
@@ -58,9 +78,9 @@ const BottonNavigation = () => {
             <BsInfoCircle size={22} className="text-gray-600" />
           </div>
         </div>
-        <div className="flex items-center justify-center w-full h-full" onClick={() => onPush('/art')}>
+        <div className="flex items-center justify-center w-full h-full" onClick={() => goUser()}>
           <div className={`${artRoutes.includes(router.pathname) ? 'p-4 rounded-full bg-gray-100' : ''}`}>
-            <FiBox size={20} className="text-gray-600" />
+            <FiUser size={22} className="text-gray-600" />
           </div>
         </div>
       </div>

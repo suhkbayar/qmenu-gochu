@@ -15,6 +15,19 @@ export const PAYMENT_TYPE = {
   MCD: 'MCD',
 };
 
+export enum NotificationActionType {
+  P = 'P', // Primary
+  S = 'S', // Secondary
+  L = 'L', // Link
+}
+
+export enum NotificationType {
+  WARNING = 'WARNING',
+  INFO = 'INFO',
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
+}
+
 export const CARD_PAYMENTS = [PAYMENT_TYPE.CTE, PAYMENT_TYPE.MCD];
 
 export const QPAY_BANK_TYPE = {

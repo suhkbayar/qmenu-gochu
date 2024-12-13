@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Modal } from 'flowbite-react';
 import useNotificationStore from '../../contexts/notificationStore';
 import { customAlertModal } from '../../../styles/themes';

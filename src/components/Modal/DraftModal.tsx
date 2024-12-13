@@ -6,23 +6,56 @@ import { isEmpty } from 'lodash';
 import { IoIosClose } from 'react-icons/io';
 import { CiTrash } from 'react-icons/ci';
 import { CURRENCY } from '../../constants/currency';
+import { useRouter } from 'next/router';
+import { getPayload } from '../../providers/auth';
+import { useQuery } from '@apollo/client';
+import { ME } from '../../graphql/query';
+import { useNotificationContext } from '../../providers/notification';
+import { NotificationActionType, NotificationType } from '../../constants/constant';
+import { FiUserCheck } from 'react-icons/fi';
+
 type Props = {
   visible: boolean;
   onClose: () => void;
 };
 
 const DraftModal = ({ visible, onClose }: Props) => {
+  const router = useRouter();
+  const { id } = router.query;
   const { t } = useTranslation('language');
+  const { showCustomNotification } = useNotificationContext();
   const { order, remove, participant } = useCallStore();
+
+  const role = getPayload()?.role;
+
+  const { data: userData } = useQuery(ME, {
+    skip: role !== 'customer',
+  });
 
   const products = participant?.menu?.categories.flatMap((category) => {
     return [...category.products, ...category.children.flatMap((child) => child.products)];
   });
 
+  const goDelivery = () => {
+    if (order?.items.length === 0) return;
+    if (!isEmpty(userData?.me)) {
+      router.push(`/delivery-type?id=${id}`);
+    } else {
+      showCustomNotification(
+        <div>
+          <FiUserCheck className="w-16 h-16 text-current" />
+        </div>,
+        'Та эхлээд нэвтрэх хэрэгтэй',
+        null,
+        [{ name: 'Нэвтрэх', value: `/login?id=${id}`, type: NotificationActionType.L, mutation: '', variables: '' }],
+      );
+    }
+  };
+
   return (
     <Modal
       theme={customThemeDraftModal}
-      className={`w-full p-0 animate__animated animate__fadeIn `}
+      className={`w-full p-0  `}
       position="center"
       dismissible
       show={visible}
@@ -59,13 +92,22 @@ const DraftModal = ({ visible, onClose }: Props) => {
           </div>
         </Modal.Body>
         <Modal.Footer className="  absolute bg-white bottom-0 w-full space-x-0 p-0">
-          <div className="w-full  flex justify-between text-sm place-items-center">
-            <span className="block text-current font-semibold">
-              {order?.totalAmount.toLocaleString()} {CURRENCY}
-            </span>
+          <div className="w-full p-4 flex justify-between text-sm place-items-center">
+            <div className="flex gap-4">
+              {order?.items.length > 0 && (
+                <>
+                  <span className="text-current text-md font-semibold">{t('mainPage.Total')}</span>
+                  <span className="block text-current text-md font-semibold">
+                    {order?.totalAmount.toLocaleString()} {CURRENCY}
+                  </span>
+                </>
+              )}
+            </div>
             <button
-              onClick={() => {}}
-              className="flex font-semibold cursor-pointer place-content-center items-center rounded-lg border border-current px-4 py-4 text-white bg-current text-sm"
+              onClick={() => goDelivery()}
+              className={`flex font-semibold cursor-pointer place-content-center items-center rounded-lg  first-line: ${
+                order?.items.length === 0 ? 'bg-gray-300 text-gray-500' : 'bg-current text-white'
+              } px-4 py-4 text-sm`}
             >
               {t('mainPage.ToBeContinued')}
             </button>

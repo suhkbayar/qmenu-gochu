@@ -1,1 +1,1 @@
-export const GOOGLE_CLOUD_KEY = 'AIzaSyDnEer55qhMmqzDVJFh8r35iGIJphY2Alk';
+export const GOOGLE_CLOUD_KEY = 'AIzaSyCndt61bD15-z8R6-nTi27euuHnaBzbfjU';
