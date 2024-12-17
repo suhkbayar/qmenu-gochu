@@ -225,7 +225,7 @@ const Index = () => {
             </div>
           </div>
           <div className="w-full bg-white rounded-lg p-2 px-6  mb-10 dark:bg-gray-800">
-            <div className="flex justify-center gap-2 ">
+            <div className="grid justify-center gap-2 ">
               <BankFrom
                 banks={participant?.payments.filter((payment) => !filterBanks.includes(payment.type))}
                 watch={watch}

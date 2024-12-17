@@ -85,15 +85,13 @@ const Index = ({ product, orderItem }: Props) => {
             <span className="line-clamp-2  mb-1 dark:text-gray-400  leading-3 h-7 text-gray-500 text-sm  ">
               <Translate>{product.description} </Translate>
             </span>
-            <span className="block text-gray-500 text-sm mb-2 h-7 md:text-base  leading-1 ">
-              {CalculateProductsPrice(product.variants)}
-            </span>
+            <span className="block text-gray-500 text-sm mb-2 h-7 ">{CalculateProductsPrice(product.variants)}</span>
           </div>
           {isConfigurable(product) ? (
-            <div className=" bg-current rounded-b-2xl py-4 ">
+            <div className=" bg-current rounded-b-xl py-2 ">
               <button
                 onClick={() => setVisible(true)}
-                className="flex  md:h-10 md:text-lg font-semibold cursor-pointer place-content-center items-center  w-full text-white  text-md p-1"
+                className="flex font-semibold cursor-pointer place-content-center items-center   w-full text-white  text-sm p-1"
               >
                 <FiShoppingCart className="text-white mr-2" />
                 {t('mainPage.Enter')}
@@ -102,8 +100,8 @@ const Index = ({ product, orderItem }: Props) => {
           ) : (
             <>
               {orderItem ? (
-                <div className="flex items-center justify-around py-2 pb-[12px]  pt-[16px]">
-                  <div onClick={() => onRemove(product)} className="border-2  rounded-xl px-4 py-2  border-current">
+                <div className="flex items-center  justify-between  sm:justify-around px-2 py-2 pt-0   rounded-b-xl">
+                  <div onClick={() => onRemove(product)} className="border-2  rounded-xl px-2 py-1  border-current">
                     <FiMinus className="text-2xl text-current" />
                   </div>
                   <p className={`mx-2 text-lg text-current ${showAnimation ? 'animate-quantity-change' : ''} `}>
@@ -111,16 +109,16 @@ const Index = ({ product, orderItem }: Props) => {
                   </p>
                   <div
                     onClick={() => onSelect(product.productId)}
-                    className="border-2  rounded-xl px-4 py-2  border-current"
+                    className="border-2  rounded-xl px-2 py-1  border-current"
                   >
                     <FiPlus className="text-2xl text-current" />
                   </div>
                 </div>
               ) : (
-                <div className=" bg-current rounded-b-2xl py-4 ">
+                <div className=" bg-current rounded-b-xl py-2 ">
                   <button
                     onClick={() => onSelect(product.productId)}
-                    className="flex font-semibold  md:h-10  md:text-lg cursor-pointer place-content-center items-center   w-full text-white  text-md p-1"
+                    className="flex font-semibold cursor-pointer place-content-center items-center   w-full text-white  text-sm p-1"
                   >
                     <FiShoppingCart className="text-white mr-2" />
                     {t('mainPage.Order')}

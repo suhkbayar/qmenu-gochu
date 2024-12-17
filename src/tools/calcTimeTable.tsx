@@ -25,9 +25,9 @@ export const checkIfOpen = (props: any) => {
   if (currentOpeningHours && currentOpeningHours.open && currentOpeningHours.close) {
     const isOpen = checkIfOpen(currentOpeningHours.open, currentOpeningHours.close);
     if (isOpen) {
-      return <span style={{ color: '#F26333' }}>Нээлттэй</span>;
+      return <span className="text-sm text-current font-semibold ">Нээлттэй</span>;
     } else {
-      return <span style={{ color: '#F26333' }}>Хаалттай</span>;
+      return <span className="text-sm text-current font-semibold ">Хаалттай</span>;
     }
   }
 

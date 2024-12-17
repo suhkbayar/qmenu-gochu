@@ -19,22 +19,23 @@ const Index: React.FC<Props> = ({ watch, onSelect, banks }) => {
   if (isEmpty(banks)) return null;
 
   return (
-    <div className="w-full bg-white rounded-lg p-2 mt-4">
-      <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-6">
+    <div className="w-full bg-white rounded-lg  mt-2 dark:bg-gray-700">
+      <div className="grid grid-cols-4 gap-6 ">
         {banks.map((bank, index) => (
           <div
             key={index}
             onClick={() => onSelect(bank.type, bank.id)}
-            className="rounded-lg flex place-self-center relative"
+            className={`rounded-lg grid  cursor-pointer place-self-center p-1 bg-gray-50 relative ${
+              paymentType === bank.type ? 'border-2 border-current' : ' border-2 border-transparent '
+            } `}
           >
-            {paymentType === bank.type && (
-              <img className="absolute mt-1.5 ml-1.5 w-4" src={checkImage.src} alt="Checkmark" />
-            )}
-            <img
-              className={`w-16 rounded-lg ${paymentType === bank.type ? 'border-4 border-current' : ''}`}
-              src={ConvertBankImg(bank.type)}
-              alt={`${bank.type} Bank`}
-            />
+            <div className="flex items-center justify-center ">
+              <img className={`w-10 rounded-lg `} src={ConvertBankImg(bank.type)} alt={`${bank.type} Bank`} />
+            </div>
+
+            <span className="line-clamp-1 content-center w-16 mt-1 text-center  text-xs text-gray-600">
+              {bank.type}
+            </span>
           </div>
         ))}
       </div>

@@ -38,13 +38,13 @@ export const CalculateProductsPrice = (variants: IMenuVariant[]) => {
 
   if (min === max) {
     return (
-      <p className="text-gray-600 font-semibold text-xl ">
+      <p className="text-gray-600 font-semibold text-sm ">
         {max.toLocaleString()} {CURRENCY}
       </p>
     );
   } else {
     return (
-      <p className="text-gray-600 font-semibold text-xl ">
+      <p className="text-gray-600 font-semibold text-sm ">
         {max.toLocaleString()} {CURRENCY}
       </p>
     );

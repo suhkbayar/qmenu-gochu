@@ -56,3 +56,6 @@ export const ItemCard = dynamic(() => import('./Card/ItemCard'), {
 });
 
 export const OrderTypeStepper = dynamic(() => import('./Step/OrderStep'));
+
+export const TimeTable = dynamic(() => import('./TimeTable/index'));
+export const Contact = dynamic(() => import('./Info/Contact'));

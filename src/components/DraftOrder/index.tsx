@@ -1,13 +1,49 @@
 import { useCallStore } from '../../contexts/call.store';
 import { CiTrash } from 'react-icons/ci';
 import { moneyFormat } from '../../helpers/formatters';
-import { FiCheck } from 'react-icons/fi';
+import { FiCheck, FiUserCheck } from 'react-icons/fi';
 import { isEmpty } from 'lodash';
 import { IoIosClose } from 'react-icons/io';
+import { getPayload } from '../../providers/auth';
+import { useQuery } from '@apollo/client';
+import { ME } from '../../graphql/query';
+import { useRouter } from 'next/router';
+import { useNotificationContext } from '../../providers/notification';
+import { NotificationActionType } from '../../constants/constant';
 
 const DraftOrder = () => {
-  const { order } = useCallStore();
-  const { remove } = useCallStore();
+  const router = useRouter();
+  const { order, remove, participant } = useCallStore();
+  const { showCustomNotification } = useNotificationContext();
+  const role = getPayload()?.role;
+
+  const { data: userData } = useQuery(ME, {
+    skip: role !== 'customer',
+  });
+
+  const goDelivery = () => {
+    if (order?.items.length === 0) return;
+    if (!isEmpty(userData?.me)) {
+      router.push(`/delivery-type?id=${participant.id}`);
+    } else {
+      showCustomNotification(
+        <div>
+          <FiUserCheck className="w-16 h-16 text-current" />
+        </div>,
+        'Та эхлээд нэвтрэх хэрэгтэй',
+        null,
+        [
+          {
+            name: 'Нэвтрэх',
+            value: `/login?id=${participant.id}`,
+            type: NotificationActionType.L,
+            mutation: '',
+            variables: '',
+          },
+        ],
+      );
+    }
+  };
 
   return (
     <div className="rounded-2xl shadow-md mt-4 mr-4">
@@ -40,7 +76,8 @@ const DraftOrder = () => {
 
       <div className="flex  w-full justify-center mt-4 p-4 ">
         <div
-          className={` flex items-center	gap-2  p-2 rounded-3xl px-6
+          onClick={() => goDelivery()}
+          className={` flex items-center cursor-pointer	gap-2  p-2 rounded-3xl px-6
             ${isEmpty(order?.items) ? ' bg-gray-300 text-white ' : 'bg-current text-white '}
             `}
         >

@@ -53,7 +53,7 @@ const Index = () => {
             </div>
           </div>
           <div className="flex w-full items-center justify-center ">
-            <span className="text-2xl text-gray-600  font-semibold ">#001</span>
+            <span className="text-2xl text-gray-600  font-semibold ">#{data?.getOrder?.number.slice(-4)}</span>
           </div>
           <div className="flex w-full items-center justify-center ">
             <span className="text-2xl text-gray-600  font-semibold ">Төлбөр амжилттай</span>

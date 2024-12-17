@@ -1,5 +1,4 @@
 import { BsInfoCircle } from 'react-icons/bs';
-import { FiBox } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { BsCart2 } from 'react-icons/bs';
 import { AiOutlineHistory } from 'react-icons/ai';
@@ -14,8 +13,7 @@ import { GET_ORDERS, ME } from '../graphql/query';
 
 const BottonNavigation = () => {
   const router = useRouter();
-  const { qr } = useContext(AuthContext);
-  const { order, setUser } = useCallStore();
+  const { order, setUser, participant } = useCallStore();
   const [visible, setVisible] = useState(false);
   const role = getPayload()?.role;
   const { data: orders } = useQuery(GET_ORDERS);
@@ -31,22 +29,19 @@ const BottonNavigation = () => {
     router.push(item);
   };
 
-  const supplierRoutes = ['/ticket', '/membership', '/users'];
-  const artRoutes = ['/art', '/gallery'];
-
   const goHome = () => {
     if (router.pathname === '/branch') {
       setVisible(true);
     } else {
-      router.push(`branch?id=${qr}`);
+      router.push(`branch?id=${participant.id}`);
     }
   };
 
   const goUser = () => {
     if (!isEmpty(userData?.me)) {
-      router.push(`/profile?id=${qr}`);
+      router.push(`/profile?id=${participant.id}`);
     } else {
-      router.push(`/login?id=${qr}`);
+      router.push(`/login?id=${participant.id}`);
     }
   };
 
@@ -83,15 +78,13 @@ const BottonNavigation = () => {
           </div>
         </div>
 
-        <div className="flex items-center justify-center w-full h-full" onClick={() => onPush('/ticket')}>
-          <div className={`${supplierRoutes.includes(router.pathname) ? 'p-4 rounded-full bg-gray-100' : ''}`}>
+        <div className="flex items-center justify-center w-full h-full" onClick={() => onPush('/branch-info')}>
+          <div className={`${router.pathname === '/branch-info' ? 'p-4 rounded-full bg-gray-100' : ''}`}>
             <BsInfoCircle size={22} className="text-gray-600" />
           </div>
         </div>
         <div className="flex items-center justify-center w-full h-full" onClick={() => goUser()}>
-          <div className={`${artRoutes.includes(router.pathname) ? 'p-4 rounded-full bg-gray-100' : ''}`}>
-            <FiUser size={22} className="text-gray-600" />
-          </div>
+          <FiUser size={22} className="text-gray-600" />
         </div>
       </div>
       <DraftModal visible={visible} onClose={() => setVisible(false)} />

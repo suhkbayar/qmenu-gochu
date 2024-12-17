@@ -1,52 +1,75 @@
 import { useState } from 'react';
 import logo from '../../assets/images/gochu.jpg';
 import { FiUser } from 'react-icons/fi';
-
+import { useRouter } from 'next/router';
+import { useCallStore } from '../../contexts/call.store';
+import { getPayload } from '../../providers/auth';
+import { useQuery } from '@apollo/client';
+import { ME } from '../../graphql/query';
+import { isEmpty } from 'lodash';
 const Header = () => {
+  const router = useRouter();
+  const { participant, setUser } = useCallStore();
   const [isOpen, setIsOpen] = useState(false);
+  const role = getPayload()?.role;
+
+  const { data: userData } = useQuery(ME, {
+    skip: role !== 'customer',
+    onCompleted: (data) => {
+      setUser(data.me);
+    },
+  });
+
+  const goUser = () => {
+    if (!isEmpty(userData?.me)) {
+      router.push(`/profile?id=${participant.id}`);
+    } else {
+      router.push(`/login?id=${participant.id}`);
+    }
+  };
 
   const renderMenu = (
     <ul className="flex flex-col  mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
       <li className="border-b-2  border-white">
-        <a
-          href="#"
+        <div
+          onClick={() => router.push(`branch?id=${participant.id}`)}
           className="block py-2 my-2 text-md pr-4 pl-3 text-white font-bold lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white"
           aria-current="page"
         >
           Нүүр
-        </a>
+        </div>
       </li>
       <li className="content-center">
-        <a
-          href="#"
+        <div
+          onClick={() => router.push(`branch-info`)}
           className="block py-2   text-md pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
         >
           Бидний тухай
-        </a>
+        </div>
       </li>
       <li className="content-center">
-        <a
-          href="#"
+        <div
+          onClick={() => router.push(`branch-info`)}
           className="block py-2 text-md pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
         >
           Цагийн хуваарь
-        </a>
+        </div>
       </li>
       <li className="content-center">
-        <a
-          href="#"
+        <div
+          onClick={() => router.push(`branch-info`)}
           className="block py-2  text-md marker:pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
         >
           Холбоо барих
-        </a>
+        </div>
       </li>
       <li className="content-center">
-        <a
-          href="#"
+        <div
+          onClick={() => goUser()}
           className="block py-2  text-md marker:pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
         >
           <FiUser className="text-xl" />
-        </a>
+        </div>
       </li>
     </ul>
   );
@@ -56,9 +79,9 @@ const Header = () => {
       <nav className="bg-primary  border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <div className="flex items-center">
-            <img src={logo.src} className="mr-3 h-16 rounded-full " alt="Gochu Logo" />
+            <img src={participant?.branch.logo} className="mr-3 h-16 rounded-full " alt="Gochu Logo" />
             <span className="self-center text-xl border-gray-800 font-semibold whitespace-nowrap dark:text-white">
-              Gochu Korean Chicken
+              {participant?.branch.name}
             </span>
           </div>
           <button
