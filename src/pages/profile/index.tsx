@@ -41,7 +41,7 @@ const Index = () => {
   const onSuccess = async (id) => {
     await refetch();
     await refetchMe();
-    router.push(`partner?id=${id}`);
+    router.push(`branch?id=${id}`);
   };
 
   const [getCurrentToken, { loading }] = useMutation(CURRENT_TOKEN, {
@@ -54,7 +54,7 @@ const Index = () => {
   });
 
   const goBack = () => {
-    router.push(`/partner?id=${id}`);
+    router.push(`/branch?id=${id}`);
   };
 
   const onLogout = () => {
@@ -85,7 +85,7 @@ const Index = () => {
           <p className="text-gray-500 text-center mb-2 dark:text-white">{data && data.me?.phone}</p>
 
           <div className=" p-3 md:flex md:justify-center">
-            <ul className=" md:w-1/3 space-y-2">
+            <ul className="  space-y-2">
               <div className="flex cursor-pointer hover:bg-gainsboro dark:hover:bg-gray1 items-center rounded-lg  place-content-between p-2">
                 <div className="flex place-content-between">
                   <img src={userInfo.src} alt={userInfo.src} className="h-7 w-7 text-gray-400 mr-2" />

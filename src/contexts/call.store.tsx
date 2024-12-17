@@ -166,7 +166,6 @@ export const useCallStore = create<ICallStore>(
       },
 
       removeOrderItem: (uuid: string) => {
-        debugger;
         set((state) =>
           set({
             order: {

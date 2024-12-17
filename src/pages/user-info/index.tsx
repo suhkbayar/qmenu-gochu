@@ -1,5 +1,11 @@
-import { IoArrowBack } from 'react-icons/io5';
-import { AddLocationModal, ControlledInput, ControlledLocation, ControlledTextArea, Step } from '../../components';
+import {
+  AddLocationModal,
+  ControlledInput,
+  ControlledLocation,
+  ControlledTextArea,
+  Loader,
+  Step,
+} from '../../components';
 import { useRouter } from 'next/router';
 import { FieldValues, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -12,6 +18,8 @@ import { useMutation } from '@apollo/client';
 import { CREATE_ORDER } from '../../graphql/mutation/order';
 import { IOrder } from '../../types';
 import { GET_ORDERS } from '../../graphql/query';
+import { CURRENCY } from '../../constants/currency';
+import { TYPE } from '../../constants/constant';
 
 const fallbackCenter = {
   lat: 47.9024278,
@@ -20,18 +28,14 @@ const fallbackCenter = {
 
 const Index = () => {
   const router = useRouter();
-  const { id } = router.query;
-  const { order, user } = useCallStore();
+  const { id, order: orderId } = router.query;
+  const { order, user, participant, load } = useCallStore();
   const { t } = useTranslation('language');
   const [visibleLocation, setVisibleLocation] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<google.maps.LatLngLiteral | null>(null);
   const { control, handleSubmit, setValue, watch } = useForm<FieldValues>({
     mode: 'all',
     resolver: yupResolver(userSchema) as any,
-    defaultValues: {
-      phone: user?.phone,
-      userName: user?.firstName,
-    },
   });
 
   const [createOrder, { loading }] = useMutation(CREATE_ORDER, {
@@ -45,7 +49,20 @@ const Index = () => {
       }
     },
     onCompleted: (data) => {
-      router.push(`/payment?id=${data.createOrder.id}`);
+      load({
+        ...order,
+        ...{ id: data.createOrder.id, address: data.createOrder.address, comment: data.createOrder.comment },
+      });
+
+      if (orderId) {
+        router.push(`/payment?id=${data.createOrder.id}`);
+      } else {
+        if (participant.vat) {
+          router.push(`/vat?id=${data.createOrder.id}`);
+        } else {
+          router.push(`/payment?id=${data.createOrder.id}`);
+        }
+      }
     },
     onError(err) {},
   });
@@ -78,6 +95,13 @@ const Index = () => {
     }
   }, []);
 
+  useEffect(() => {
+    if (user) {
+      setValue('phone', user.phone);
+      setValue('userName', user.firstName);
+    }
+  }, [user]);
+
   const onSubmit = (data: FieldValues) => {
     if (order) {
       const items = order.items.map((item) => ({
@@ -90,29 +114,21 @@ const Index = () => {
         })),
       }));
 
-      const emptyObject = {
-        deliveryDate: '',
-        contact: '',
-        address: '',
-        name: '',
-        comment: '',
-        guests: 1,
-      };
-
-      // createOrder({
-      //   variables: {
-      //     participant: id,
-      //     input: {
-      //       type: TYPE.DELIVERY,
-      //       items: items,
-      //       deliveryDate: order.deliveryDate,
-      //       contact: data.phone,
-      //       address: data.location,
-      //       name: data.userName,
-      //       comment: data.comment,
-      //     },
-      //   },
-      // });
+      createOrder({
+        variables: {
+          participant: id,
+          input: {
+            type: TYPE.DELIVERY,
+            items: items,
+            deliveryDate: order.deliveryDate,
+            contact: data.phone,
+            address: data.location,
+            name: data.userName,
+            comment: data.comment,
+            guests: 1,
+          },
+        },
+      });
     }
   };
 
@@ -120,16 +136,17 @@ const Index = () => {
     setValue('location', data);
   };
 
+  if (loading) return <Loader />;
+
   return (
     <section className="flex w-full justify-center">
       <div className="relative w-full h-screen sm:w-3/6 md:w-3/5 lg:w-3/5 xl:w-3/6 2xl:w-2/5">
         {/* Step Indicator */}
         <div className="w-full mt-4 px-4">
-          <Step totalSteps={4} activeStep={2} />
+          <Step totalSteps={participant?.vat ? 5 : 4} activeStep={2} />
         </div>
 
         <div className=" flex gap-4 items-center w-full mt-4 px-4">
-          <IoArrowBack onClick={() => goBack()} className="text-2xl text-gray-600" />{' '}
           <span className="text-lg text-primary font-semibold">Хэрэглэгчийн мэдээлэл</span>
         </div>
 
@@ -159,14 +176,27 @@ const Index = () => {
         </form>
         <div className="absolute bg-white bottom-0 w-full border-t border-gray-100 p-4">
           <div className="w-full flex justify-between text-sm place-items-center">
-            <div className="flex gap-4"></div>
+            <div
+              onClick={() => goBack()}
+              className="flex p-4 rounded-lg bg-gray-300 px-6
+             "
+            >
+              <span className="text-white">Буцах</span>
+            </div>
             <button
               onClick={handleSubmit(onSubmit)}
-              className={`flex font-semibold cursor-pointer place-content-center items-center rounded-lg ${
+              className={`flex gap-4  font-semibold cursor-pointer place-content-center items-center rounded-lg ${
                 isEmpty(phone && userName && location) ? 'bg-gray-300 text-gray-500' : 'bg-current text-white'
               } px-4 py-4 text-sm`}
             >
-              {t('mainPage.ToBeContinued')}
+              <span>{t('mainPage.ToBeContinued')}</span>
+              {order?.items.length > 0 && (
+                <>
+                  <span className="block text-white text-md font-semibold">
+                    ( {order?.totalAmount.toLocaleString()} {CURRENCY} )
+                  </span>
+                </>
+              )}
             </button>
           </div>
         </div>

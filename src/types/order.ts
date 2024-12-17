@@ -58,6 +58,8 @@ export interface ICustomerOrder {
   deliveryDate?: string;
   buyer?: string;
   register?: string;
+  address?: string;
+  comment?: string;
   vatType?: string;
 }
 

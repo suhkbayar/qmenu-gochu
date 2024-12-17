@@ -55,7 +55,7 @@ const Index = () => {
 
   const { phone, password } = watch();
   const goBack = () => {
-    router.push(`/partner?id=${id}`);
+    router.push(`/branch?id=${id}`);
   };
 
   const goRegister = () => {

@@ -50,7 +50,7 @@ const Index = () => {
     await refetch();
     await refetchMe();
     showNotification(NotificationType.SUCCESS, t('mainPage.LoginSuccess'));
-    router.push(`/partner?id=${id}`);
+    router.push(`/branch?id=${id}`);
   };
 
   const [signUp] = useMutation(SIGN_UP, {

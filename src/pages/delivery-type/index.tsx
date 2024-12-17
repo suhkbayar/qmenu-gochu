@@ -1,22 +1,43 @@
 import { useRouter } from 'next/router';
-import { Step } from '../../components';
+import { Loader, Step } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useCallStore } from '../../contexts/call.store';
 import { CURRENCY } from '../../constants/currency';
 import { useEffect, useState } from 'react';
 import { isEmpty } from 'lodash';
 import moment from 'moment';
+import { useMutation } from '@apollo/client';
+import { CREATE_ORDER } from '../../graphql/mutation/order';
+import { IOrder } from '../../types';
+import { GET_ORDERS } from '../../graphql/query';
+import { TYPE } from '../../constants/constant';
 
 const Index = () => {
   const router = useRouter();
-  const { id } = router.query;
+  const { id, order: orderId } = router.query;
   const { t } = useTranslation('language');
-  const { order, load } = useCallStore();
+  const { order, load, participant, user } = useCallStore();
   const [selectedDate, setSelectedDate] = useState<string>('');
   const [item, setItem] = useState<any>();
   const [selectedTime, setSelectedTime] = useState<string>('ASAP');
   const [dates, setDates] = useState<{ label: string; date: string }[]>([]);
   const [times, setTimes] = useState<string[]>([]);
+
+  const [createOrder, { loading }] = useMutation(CREATE_ORDER, {
+    update(cache, { data: { createOrder } }) {
+      const caches = cache.readQuery<{ getOrders: IOrder[] }>({ query: GET_ORDERS });
+      if (caches && caches.getOrders) {
+        cache.writeQuery({
+          query: GET_ORDERS,
+          data: { getOrders: caches.getOrders.concat([createOrder]) },
+        });
+      }
+    },
+    onCompleted: (data) => {
+      router.push(`/payment?id=${data.createOrder.id}`);
+    },
+    onError(err) {},
+  });
 
   const navigateToUserInfo = () => {
     let DeliveryDate = '';
@@ -32,9 +53,37 @@ const Index = () => {
       DeliveryDate = 'ASAP';
     }
 
-    load({ ...order, deliveryDate: DeliveryDate });
+    if (orderId) {
+      const items = order.items.map((item) => ({
+        id: item.id,
+        quantity: item.quantity,
+        comment: item.comment,
+        options: item.options.map((option) => ({
+          id: option.id,
+          value: option.value,
+        })),
+      }));
 
-    router.push(`/user-info?id=${id}`);
+      createOrder({
+        variables: {
+          participant: id,
+          input: {
+            type: TYPE.DELIVERY,
+            items: items,
+            deliveryDate: DeliveryDate,
+            contact: user.phone,
+            address: order.address,
+            name: user.firstName,
+            comment: order.comment,
+            guests: 1,
+          },
+        },
+      });
+    } else {
+      router.push(`/user-info?id=${id}`);
+    }
+
+    load({ ...order, deliveryDate: DeliveryDate });
   };
 
   useEffect(() => {
@@ -107,7 +156,7 @@ const Index = () => {
   }, [selectedDate]);
 
   const goBack = () => {
-    router.push(`/partner?id=${id}`);
+    router.push(`/branch?id=${id}`);
   };
 
   const onSelectDate = (item: any) => {
@@ -120,12 +169,14 @@ const Index = () => {
     setSelectedTime(time);
   };
 
+  if (loading) return <Loader />;
+
   return (
     <section className="flex w-full justify-center">
       <div className="relative w-full h-screen sm:w-3/6 md:w-3/5 lg:w-3/5 xl:w-3/6 2xl:w-2/5">
         {/* Step Indicator */}
         <div className="w-full mt-4 px-4">
-          <Step totalSteps={4} activeStep={1} />
+          <Step totalSteps={participant?.vat ? 5 : 4} activeStep={1} />
         </div>
 
         {/* Section Title */}
@@ -134,7 +185,7 @@ const Index = () => {
         </div>
 
         {/* Delivery Options */}
-        <div className="w-full grid gap-4 mt-4 px-4">
+        <div className="w-full grid gap-4 mt-2 px-4">
           <div className="flex space-x-2 overflow-x-auto mb-4">
             {dates.map((item) => (
               <button
@@ -148,7 +199,7 @@ const Index = () => {
               </button>
             ))}
           </div>
-          <div className="w-full h-[64vh] overflow-auto mb-[8px]">
+          <div className="w-full h-[64vh] overflow-auto ">
             <div className=" grid grid-cols-2  gap-2">
               {!isEmpty(selectedDate) && (
                 <>
@@ -173,6 +224,10 @@ const Index = () => {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Footer */}
+        <div className="absolute bg-white bottom-0 w-full border-t border-gray-100 p-4">
           {(selectedDate === 'Today' || selectedDate === '') && (
             <div
               key="asap"
@@ -191,10 +246,6 @@ const Index = () => {
               />
             </div>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="absolute bg-white bottom-0 w-full border-t border-gray-100 p-4">
           <div className="w-full flex justify-between text-sm place-items-center">
             <div
               onClick={() => goBack()}

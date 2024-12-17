@@ -11,6 +11,7 @@ import { useLazyQuery } from '@apollo/client';
 import { GET_NEAREST_LOCATIONS } from '../../graphql/query';
 import { FiChevronRight } from 'react-icons/fi';
 import { GOOGLE_CLOUD_KEY } from '../../constants/api';
+import toLocation from '../../assets/delivery/to_location.svg';
 
 type Props = {
   visible: boolean;
@@ -194,10 +195,20 @@ const AddLocationModal = ({ visible, onClose, onConfirm }: Props) => {
                         key={index}
                         className="flex cursor-pointer hover:bg-gray-50 items-center justify-between p-2 border-b border-gray-200"
                       >
-                        <div className="flex items-center">
-                          {item.address}, {item.description}
+                        <div className="grid grid-cols-8 gap-2 ">
+                          <div className="col-span-1 flex w-full self-center justify-center  ">
+                            <div className=" flex w-10 h-10 items-center justify-center">
+                              <img src={toLocation.src} className="w-6 h-6" />
+                            </div>
+                          </div>
+                          <div className="grid col-span-7">
+                            <span className="flex items-center text-sm  line-clamp-2">
+                              {item.address}, {item.description}
+                            </span>
+                          </div>
                         </div>
-                        <div className=" flex items-center justify-end w-10 h-10">
+
+                        <div className=" flex items-center justify-end">
                           <FiChevronRight className="text-2xl text-gray-500" />
                         </div>
                       </div>

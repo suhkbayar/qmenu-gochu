@@ -2,6 +2,7 @@ import React, { createContext, useContext, useMemo, useState } from 'react';
 import { NotificationType } from '../constants/constant';
 import { NotificationModal } from '../components/Modal/NotificationModal';
 import { INotification, INotificationAction } from '../types/notification';
+import { OrderModal } from '../components/Modal/OrderModal';
 
 interface NotificationsState {
   notifications: INotification[];
@@ -136,6 +137,8 @@ export const NotificationProvider = ({ children }: any) => {
         onClose={() => onClose()}
         actions={state.actions}
       />
+
+      <OrderModal orderId={state.orderId} orderVisible={state.orderVisible} onClose={() => onClose()} />
     </NotificationContext.Provider>
   );
 };

@@ -7,7 +7,7 @@ import most from './img/most.png';
 import taniBank from './img/nibank.png';
 import stateBank from './img/statebank.png';
 import tbd from './img/tdbbank.png';
-import { PAYMENT_TYPE, QPAY_BANK_TYPE } from '../constants/constant';
+import { PAYMENT_TYPE, QPAY_BANK_TYPE, TYPE } from '../constants/constant';
 import canteen from '../assets/images/canteen.png';
 import cash from './img/cash.png';
 import card from './img/card.png';
@@ -17,6 +17,11 @@ import socialPay from './img/socialpay.png';
 import toki from './img/toki.png';
 import upoint from './img/upoint.png';
 import unp from './img/union.png';
+
+import dining from '../assets/order/dinig.svg';
+import preOrder from '../assets/order/preOrder.svg';
+import takeAway from '../assets/order/takeAway.svg';
+import delivery from '../assets/order/delivery.svg';
 
 export const ConvertQpayBankImg = (type: any) => {
   switch (type) {
@@ -60,6 +65,8 @@ export const ConvertBankImg = (type: any) => {
       return card.src;
     case PAYMENT_TYPE.QPay:
       return qpay.src;
+    case PAYMENT_TYPE.QPay2:
+      return qpay.src;
     case PAYMENT_TYPE.MonPay:
       return monpay.src;
     case PAYMENT_TYPE.SocialPay:
@@ -77,6 +84,47 @@ export const ConvertBankImg = (type: any) => {
       return canteen.src;
     case PAYMENT_TYPE.MCD:
       return canteen.src;
+    default:
+      return type;
+  }
+};
+
+export const BankName = (type: any) => {
+  switch (type) {
+    case PAYMENT_TYPE.Cash:
+      return PAYMENT_TYPE.Cash;
+    case PAYMENT_TYPE.Kart:
+      return PAYMENT_TYPE.Kart;
+    case PAYMENT_TYPE.QPay:
+      return PAYMENT_TYPE.QPay;
+    case PAYMENT_TYPE.MonPay:
+      return PAYMENT_TYPE.MonPay;
+    case PAYMENT_TYPE.SocialPay:
+      return PAYMENT_TYPE.SocialPay;
+    case PAYMENT_TYPE.Toki:
+      return PAYMENT_TYPE.Toki;
+    case PAYMENT_TYPE.UPT:
+    case PAYMENT_TYPE.Upoint:
+      return PAYMENT_TYPE.Upoint;
+    case PAYMENT_TYPE.MNQ:
+      return PAYMENT_TYPE.MNQ;
+    case PAYMENT_TYPE.UNP:
+      return PAYMENT_TYPE.UNP;
+    default:
+      return type;
+  }
+};
+
+export const ConvertOrderType = (type: any) => {
+  switch (type) {
+    case TYPE.DINIG:
+      return dining.src;
+    case TYPE.PRE_ORDER:
+      return preOrder.src;
+    case TYPE.DELIVERY:
+      return delivery.src;
+    case TYPE.TAKE_AWAY:
+      return takeAway.src;
     default:
       return type;
   }

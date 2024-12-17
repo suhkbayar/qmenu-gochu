@@ -89,3 +89,33 @@ export const VALIDATE_TRANSACTION = gql`
   ${TRANSACTION_FIELDS}
   ${ORDER_LOYALTY_FIELDS}
 `;
+
+export const CORRECTION_TRANSACTION = gql`
+  mutation returnTransaction($id: ID!, $reason: String) {
+    returnTransaction(id: $id, reason: $reason) {
+      order {
+        ...OrderFields
+        table {
+          ...TableFields
+        }
+        items {
+          ...OrderItemFields
+        }
+        transactions {
+          ...TransactionFields
+        }
+        loyalties {
+          ...OrderLoyaltyFields
+        }
+      }
+      transaction {
+        ...TransactionFields
+      }
+    }
+  }
+  ${ORDER_FIELDS}
+  ${TABLE_FIELDS}
+  ${ORDER_ITEM_FIELDS}
+  ${TRANSACTION_FIELDS}
+  ${ORDER_LOYALTY_FIELDS}
+`;

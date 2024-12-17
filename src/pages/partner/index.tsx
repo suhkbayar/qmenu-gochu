@@ -1,20 +1,24 @@
-import { useMutation } from '@apollo/client';
+import { empty, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import React, { useContext } from 'react';
 import Loader from '../../components/Loader/Loader';
 import { CURRENT_TOKEN } from '../../graphql/mutation/token';
 import { AuthContext, getPayload } from '../../providers/auth';
-import { MainContent } from '../../components';
+import { useCallStore } from '../../contexts/call.store';
+import { emptyOrder } from '../../mock';
 
 const Index = () => {
   const router = useRouter();
   const { id } = router.query;
+  const { load } = useCallStore();
   const { authenticate, changeQr } = useContext(AuthContext);
 
   const [getCurrentToken, { loading }] = useMutation(CURRENT_TOKEN, {
     onCompleted: (data) => {
       authenticate(data.getToken.token, () => {});
       getPayload();
+      router.push(`branch?id=${id}`);
+      load(emptyOrder);
     },
     onError(err) {
       // router.push('/notfound');
@@ -31,7 +35,7 @@ const Index = () => {
 
   if (loading) return <Loader />;
 
-  return <MainContent />;
+  return <Loader />;
 };
 
 export default Index;
