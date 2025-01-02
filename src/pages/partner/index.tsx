@@ -1,4 +1,4 @@
-import { empty, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import React, { useContext } from 'react';
 import Loader from '../../components/Loader/Loader';

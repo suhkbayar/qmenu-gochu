@@ -4,7 +4,7 @@ import { NextjsSite } from 'sst/constructs';
 export default {
   config(_input) {
     return {
-      name: 'qmenu-kiosk',
+      name: 'qmenu-gochu',
       region: 'ap-east-1',
     };
   },

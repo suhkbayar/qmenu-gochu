@@ -35,7 +35,20 @@ const Index = () => {
   const [payOrderByPayment, { loading: paying }] = useMutation(GET_PAY_ORDER, {
     onCompleted: (data) => {
       setTransaction(data.payOrder.transaction);
-      setVisiblePending(true);
+
+      let link = null;
+      if (data.payOrder.transaction.links) {
+        link = data.payOrder.transaction.links.find(
+          (link) => link.name.toUpperCase() === paymentType.toUpperCase(),
+        )?.link;
+      }
+
+      if (link) {
+        window.location.href = link;
+        setVisiblePending(true);
+      } else {
+        showNotification(NotificationType.ERROR, 'Payment link not found'); // Handle the case when the link is not found
+      }
     },
     onError(err) {
       showAlert(true, 'error', err.message, t('mainPage.Error'));
