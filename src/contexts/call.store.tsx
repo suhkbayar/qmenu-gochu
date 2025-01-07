@@ -7,7 +7,7 @@ import { IMenuVariant } from '../types/menu';
 import { generateUUID } from '../tools/generate';
 import { isEmpty } from 'lodash';
 import { IUser } from '../types/user';
-import { IConfig } from '../types';
+import { IBranch, IConfig } from '../types';
 import { kioskConfigs } from '../constants/constant';
 import { parseConfig } from '../utils';
 
@@ -27,11 +27,13 @@ interface ICallStore {
   order: ICustomerOrder;
   user: IUser;
   config: IConfig;
+  selectedParticipant: IParticipant;
   isPartner: boolean;
   setUser: (user: IUser) => void;
   participant: IParticipant;
   calculate: () => void;
   removeOrder: () => void;
+  setSelectedParticipant: (selectedParticipant: IParticipant) => void;
   removeOrderItem: (uuid: string) => void;
   addOrderItemComment: (item: IOrderItem, comment: string) => void;
   addOrderItem: (item: IOrderItem) => void;
@@ -49,6 +51,7 @@ export const useCallStore = create<ICallStore>(
       order: null,
       user: null,
       config: null,
+      selectedParticipant: null,
       isPartner: false,
       participant: undefined,
 
@@ -71,6 +74,9 @@ export const useCallStore = create<ICallStore>(
       },
       setUser: (user) => {
         set({ user: user });
+      },
+      setSelectedParticipant: (participant) => {
+        set({ selectedParticipant: participant });
       },
       onTogglePartner: (isPartner) => {
         set({ isPartner: isPartner });

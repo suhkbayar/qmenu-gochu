@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import logo from '../../assets/images/gochu.jpg';
 import { FiUser } from 'react-icons/fi';
 import { useRouter } from 'next/router';
 import { useCallStore } from '../../contexts/call.store';
@@ -7,9 +6,16 @@ import { getPayload } from '../../providers/auth';
 import { useQuery } from '@apollo/client';
 import { ME } from '../../graphql/query';
 import { isEmpty } from 'lodash';
-const Header = () => {
+import { TYPE } from '../../constants/constant';
+import { IoArrowBack } from 'react-icons/io5';
+
+type Props = {
+  isBack?: boolean;
+};
+
+const Header: React.FC<Props> = ({ isBack }) => {
   const router = useRouter();
-  const { participant, setUser } = useCallStore();
+  const { participant, setUser, selectedParticipant, order } = useCallStore();
   const [isOpen, setIsOpen] = useState(false);
   const role = getPayload()?.role;
 
@@ -29,8 +35,8 @@ const Header = () => {
   };
 
   const renderMenu = (
-    <ul className="flex flex-col  mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-      <li className="border-b-2  border-white">
+    <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
+      <li className="border-b-2 border-white">
         <div
           onClick={() => router.push(`branch?id=${participant.id}`)}
           className="block py-2 my-2 text-md pr-4 pl-3 text-white font-bold lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white"
@@ -42,7 +48,7 @@ const Header = () => {
       <li className="content-center">
         <div
           onClick={() => router.push(`branch-info`)}
-          className="block py-2   text-md pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+          className="block py-2 text-md pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
         >
           Бидний тухай
         </div>
@@ -58,7 +64,7 @@ const Header = () => {
       <li className="content-center">
         <div
           onClick={() => router.push(`branch-info`)}
-          className="block py-2  text-md marker:pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+          className="block py-2 text-md pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
         >
           Холбоо барих
         </div>
@@ -66,7 +72,7 @@ const Header = () => {
       <li className="content-center">
         <div
           onClick={() => goUser()}
-          className="block py-2  text-md marker:pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+          className="block py-2 text-md pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
         >
           <FiUser className="text-xl" />
         </div>
@@ -74,20 +80,29 @@ const Header = () => {
     </ul>
   );
 
+  const goBack = () => {
+    router.push(`/partner?id=${participant.id}`);
+  };
+
   return (
-    <header className="sticky top-0 w-full z-10 ">
-      <nav className="bg-primary  border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
+    <header className="sticky top-0 w-full z-10">
+      <nav className="bg-primary border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <div className="flex items-center">
-            <img src={participant?.branch.logo} className="mr-3 h-16 rounded-full " alt="Gochu Logo" />
+            {isBack && <IoArrowBack onClick={goBack} className="mr-4 text-2xl text-gray-700" />}
+            <img
+              src={order?.type === TYPE.TAKE_AWAY ? selectedParticipant?.branch.logo : participant?.branch.logo}
+              className="mr-3 h-14 rounded-xl"
+              alt="Gochu Logo"
+            />
             <span className="self-center text-xl border-gray-800 font-semibold whitespace-nowrap dark:text-white">
-              {participant?.branch.name}
+              {order?.type === TYPE.TAKE_AWAY ? selectedParticipant?.branch.name : participant?.branch.name}
             </span>
           </div>
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="inline-flex items-center p-2 ml-1 text-sm text-white rounded-lg lg:hidden  focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="inline-flex items-center p-2 ml-1 text-sm text-white rounded-lg lg:hidden focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
           >
             <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -105,9 +120,9 @@ const Header = () => {
             </svg>
           </button>
           {isOpen && (
-            <div className=" justify-between items-center w-full lg:flex lg:w-auto lg:order-1">{renderMenu}</div>
+            <div className="justify-between items-center w-full lg:flex lg:w-auto lg:order-1">{renderMenu}</div>
           )}
-          <div className="  hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1">{renderMenu}</div>
+          <div className="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1">{renderMenu}</div>
         </div>
       </nav>
     </header>

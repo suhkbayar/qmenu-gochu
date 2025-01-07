@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { Loader, Step, VatForm } from '../../components';
+import { Step, VatForm } from '../../components';
 import logo from '../../assets/icons/eBarimt_logo.png';
 import { useCallStore } from '../../contexts/call.store';
 import { FieldValues, useForm } from 'react-hook-form';
@@ -73,7 +73,7 @@ const Index = () => {
           <span className="text-xs pt-1 text-red-500 dark:text-white">{errors.register?.message}</span>
         </form>
 
-        <div className="absolute bg-white bottom-0 w-full border-t border-gray-100 p-4">
+        <div className=" fixed cursor-pointer bottom-0 p-4 sm:bottom-0 transition-all duration-500  md:bottom-5 lg:bottom-5 w-full   sm:w-full md:w-6/12 lg:w-6/12 xl:w-4/12 2xl:w-4/12">
           <div className="w-full flex justify-between text-sm place-items-center">
             <div
               onClick={() => goBack()}

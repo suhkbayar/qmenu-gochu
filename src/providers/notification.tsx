@@ -123,7 +123,7 @@ export const NotificationProvider = ({ children }: any) => {
       showLoyaltyNotification,
       showOrderNotification,
     }),
-    [state, notificationState],
+    [notificationState, showNotification, showCustomNotification, showLoyaltyNotification, showOrderNotification],
   );
 
   return (

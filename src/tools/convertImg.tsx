@@ -17,6 +17,7 @@ import socialPay from './img/socialpay.png';
 import toki from './img/toki.png';
 import upoint from './img/upoint.png';
 import unp from './img/union.png';
+import mbk from './img/mbank.png';
 
 import dining from '../assets/order/dinig.svg';
 import preOrder from '../assets/order/preOrder.svg';
@@ -84,6 +85,8 @@ export const ConvertBankImg = (type: any) => {
       return canteen.src;
     case PAYMENT_TYPE.MCD:
       return canteen.src;
+    case PAYMENT_TYPE.MBK:
+      return mbk.src;
     default:
       return type;
   }

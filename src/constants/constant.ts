@@ -13,6 +13,7 @@ export const PAYMENT_TYPE = {
   UNP: 'UNP',
   GLP: 'GLP',
   MCD: 'MCD',
+  MBK: 'MBK',
 };
 
 export enum NotificationActionType {

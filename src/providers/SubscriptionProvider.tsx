@@ -7,40 +7,33 @@ import { AuthContext, getPayload } from './auth';
 
 const SubscriptionProvider = ({ children }) => {
   const { isAuthenticated } = useContext(AuthContext);
-
-  let customerId: string;
-
-  if (isAuthenticated) {
-    customerId = getPayload()?.sub;
-  } else {
-    return <>{children}</>;
-  }
+  const customerId = isAuthenticated ? getPayload()?.sub : null;
 
   useSubscription(ON_UPDATED_ORDER, {
     variables: { customer: customerId },
-    skip: !customerId,
+    skip: !customerId, // Avoids running the subscription if customerId is null
     onData({ client, data }) {
       if (!data) return;
+
       const caches = client.readQuery<{ getOrders: IOrder[] }>({ query: GET_ORDERS });
       if (!caches || !caches.getOrders) return;
 
       const { event, order: subscriptionOrder } = data.data.onUpdatedOrder;
-      const updatedOrders = caches.getOrders.map((order) =>
-        order?.id === subscriptionOrder.id ? subscriptionOrder : order,
-      );
+      let updatedOrders = [...caches.getOrders];
 
       switch (event) {
         case 'CREATED':
         case 'UPDATED':
           if (!updatedOrders.find((order) => order?.id === subscriptionOrder.id)) {
             updatedOrders.push(subscriptionOrder);
+          } else {
+            updatedOrders = updatedOrders.map((order) =>
+              order?.id === subscriptionOrder.id ? subscriptionOrder : order,
+            );
           }
           break;
         case 'DELETE':
-          client.writeQuery({
-            query: GET_ORDERS,
-            data: { getOrders: updatedOrders.filter((order) => order?.id !== subscriptionOrder.id) },
-          });
+          updatedOrders = updatedOrders.filter((order) => order?.id !== subscriptionOrder.id);
           break;
         default:
           return;
@@ -54,11 +47,11 @@ const SubscriptionProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    // Clean up the subscription when the component unmounts
+    // Clean up or additional logic if necessary
     return () => {
-      // Unsubscribe or perform any necessary cleanup
+      // Perform cleanup if needed
     };
-  }, []);
+  }, []); // Ensure useEffect is not conditional
 
   return <>{children}</>;
 };

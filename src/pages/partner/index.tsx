@@ -17,6 +17,7 @@ const Index = () => {
     onCompleted: (data) => {
       authenticate(data.getToken.token, () => {});
       getPayload();
+      localStorage.setItem('partnerId', id as string);
       router.push(`branch?id=${id}`);
       load(emptyOrder);
     },

@@ -85,9 +85,9 @@ export const customThemeScheduleModal = {
     },
   },
   content: {
-    base: 'relative h-[900vh] w-full  p-0 md:h-3/5  rounded-lg',
+    base: 'relative h-full w-full  p-0 md:h-3/5  rounded-lg',
     inner:
-      'relative rounded-2xl overflow-auto md:rounded-lg bg-white shadow dark:bg-gray-700 flex flex-col h-full lg:h-3/5 justify-between lg:justify-start',
+      'relative  overflow-auto md:rounded-lg bg-white shadow dark:bg-gray-700 flex flex-col h-full lg:h-3/5 justify-between lg:justify-start',
   },
   body: {
     base: 'flex-1 overflow-auto',
@@ -103,7 +103,7 @@ export const customThemeScheduleModal = {
     },
   },
   footer: {
-    base: 'flex items-center place-content-around space-x-2 rounded-b border-gray-200 p-1 dark:border-gray-600',
+    base: 'flex items-center place-content-around space-x-2 rounded-b border-gray-200 p-0 dark:border-gray-600',
     popup: 'border-t',
   },
 };
@@ -140,9 +140,9 @@ export const customThemeDraftModal = {
     },
   },
   content: {
-    base: 'relative h-screen w-full  p-0 md:h-3/5  rounded-lg',
+    base: 'relative h-full w-full  p-0 md:h-3/5  rounded-lg',
     inner:
-      'relative  overflow-auto bg-white shadow dark:bg-gray-700 flex flex-col h-full lg:h-3/5 justify-between lg:justify-start',
+      'relative  overflow-auto md:rounded-lg bg-white shadow dark:bg-gray-700 flex flex-col h-full lg:h-3/5 justify-between lg:justify-start',
   },
   body: {
     base: 'flex-1 overflow-auto',
@@ -158,7 +158,7 @@ export const customThemeDraftModal = {
     },
   },
   footer: {
-    base: 'flex items-center place-content-around space-x-0 rounded-b border-gray-200 p-1 dark:border-gray-600',
+    base: 'flex items-center place-content-around space-x-2 rounded-b border-gray-200 p-0 dark:border-gray-600',
     popup: 'border-t',
   },
 };

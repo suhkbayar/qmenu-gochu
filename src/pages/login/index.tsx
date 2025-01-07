@@ -91,7 +91,7 @@ const Index = () => {
             control={control}
             text={t('mainPage.Password')}
             name="password"
-            inputMode="numeric"
+            inputMode="text"
             type="password"
           />
           <div className="text-sm w-full pt-0 pb-2  text-current text-end">

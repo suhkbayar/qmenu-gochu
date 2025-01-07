@@ -11,8 +11,8 @@ import { getPayload } from '../../providers/auth';
 import { useQuery } from '@apollo/client';
 import { ME } from '../../graphql/query';
 import { useNotificationContext } from '../../providers/notification';
-import { NotificationActionType, NotificationType } from '../../constants/constant';
-import { FiUserCheck } from 'react-icons/fi';
+import { NotificationActionType } from '../../constants/constant';
+import validateLogin from '../../assets/user/login.svg';
 
 type Props = {
   visible: boolean;
@@ -43,7 +43,7 @@ const DraftModal = ({ visible, onClose }: Props) => {
     } else {
       showCustomNotification(
         <div>
-          <FiUserCheck className="w-16 h-16 text-current" />
+          <img src={validateLogin.src} className="w-16 h-16 text-current" />
         </div>,
         'Та эхлээд нэвтрэх хэрэгтэй',
         null,

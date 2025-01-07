@@ -68,13 +68,13 @@ const Index = () => {
         variables: {
           participant: id,
           input: {
-            type: TYPE.DELIVERY,
+            type: order?.type,
             items: items,
             deliveryDate: DeliveryDate,
-            contact: user.phone,
-            address: order.address,
-            name: user.firstName,
-            comment: order.comment,
+            contact: user?.phone || '',
+            address: order?.address || '',
+            name: user?.firstName || '',
+            comment: order?.comment || '',
             guests: 1,
           },
         },
@@ -115,12 +115,12 @@ const Index = () => {
         const currentMinute = now.getMinutes();
 
         for (let hour = currentHour; hour < 23; hour++) {
-          for (let minute = hour === currentHour ? (currentMinute > 30 ? 30 : 0) : 0; minute < 60; minute += 30) {
+          for (let minute = hour === currentHour ? (currentMinute > 0 ? 60 : 0) : 0; minute < 60; minute += 60) {
             const startTime = new Date();
             startTime.setHours(hour, minute, 0);
 
             const endTime = new Date(startTime);
-            endTime.setMinutes(startTime.getMinutes() + 30);
+            endTime.setMinutes(startTime.getMinutes() + 60);
 
             newTimes.push(
               `${startTime.toLocaleTimeString('en-US', {
@@ -133,12 +133,12 @@ const Index = () => {
       } else {
         // For other dates, start from 8:00 AM with 30-minute intervals
         for (let hour = 8; hour < 23; hour++) {
-          for (let minute = 0; minute < 60; minute += 30) {
+          for (let minute = 0; minute < 60; minute += 60) {
             const startTime = new Date();
             startTime.setHours(hour, minute, 0);
 
             const endTime = new Date(startTime);
-            endTime.setMinutes(startTime.getMinutes() + 30);
+            endTime.setMinutes(startTime.getMinutes() + 60);
 
             newTimes.push(
               `${startTime.toLocaleTimeString('en-US', {
@@ -181,7 +181,9 @@ const Index = () => {
 
         {/* Section Title */}
         <div className=" flex gap-4 items-center w-full mt-4 px-4">
-          <span className="text-lg text-primary font-semibold">Хүргэх сонголтууд</span>
+          <span className="text-lg text-primary font-semibold">
+            {order?.type === TYPE.TAKE_AWAY ? 'Авч явах цаг' : 'Хүргэх сонголтууд'}
+          </span>
         </div>
 
         {/* Delivery Options */}
@@ -227,7 +229,7 @@ const Index = () => {
         </div>
 
         {/* Footer */}
-        <div className="absolute bg-white bottom-0 w-full border-t border-gray-100 p-4">
+        <div className=" fixed bg-white cursor-pointer bottom-0 p-4 sm:bottom-0 transition-all duration-500  md:bottom-5 lg:bottom-5 w-full   sm:w-full md:w-6/12 lg:w-6/12 xl:w-4/12 2xl:w-4/12">
           {(selectedDate === 'Today' || selectedDate === '') && (
             <div
               key="asap"

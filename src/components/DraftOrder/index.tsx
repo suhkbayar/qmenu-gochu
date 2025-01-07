@@ -1,7 +1,7 @@
 import { useCallStore } from '../../contexts/call.store';
 import { CiTrash } from 'react-icons/ci';
 import { moneyFormat } from '../../helpers/formatters';
-import { FiCheck, FiUserCheck } from 'react-icons/fi';
+import { FiCheck } from 'react-icons/fi';
 import { isEmpty } from 'lodash';
 import { IoIosClose } from 'react-icons/io';
 import { getPayload } from '../../providers/auth';
@@ -10,6 +10,7 @@ import { ME } from '../../graphql/query';
 import { useRouter } from 'next/router';
 import { useNotificationContext } from '../../providers/notification';
 import { NotificationActionType } from '../../constants/constant';
+import validateLogin from '../../assets/user/login.svg';
 
 const DraftOrder = () => {
   const router = useRouter();
@@ -28,7 +29,7 @@ const DraftOrder = () => {
     } else {
       showCustomNotification(
         <div>
-          <FiUserCheck className="w-16 h-16 text-current" />
+          <img src={validateLogin.src} className="w-16 h-16 text-current" />
         </div>,
         'Та эхлээд нэвтрэх хэрэгтэй',
         null,

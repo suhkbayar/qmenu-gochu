@@ -84,22 +84,22 @@ const FoodContent = () => {
   };
 
   const onScroll = () => {
-    if (window.innerWidth < 640) {
-      window.scrollTo({
-        top: 508,
-        behavior: 'smooth', // Ensures smooth scrolling
-      });
-    } else if (window.innerWidth < 1023) {
-      window.scrollTo({
-        top: 800,
-        behavior: 'smooth', // Ensures smooth scrolling
-      });
-    } else {
-      window.scrollTo({
-        top: 480,
-        behavior: 'smooth', // Ensures smooth scrolling
-      });
-    }
+    // if (window.innerWidth < 640) {
+    //   window.scrollTo({
+    //     top: 508,
+    //     behavior: 'smooth', // Ensures smooth scrolling
+    //   });
+    // } else if (window.innerWidth < 1023) {
+    //   window.scrollTo({
+    //     top: 800,
+    //     behavior: 'smooth', // Ensures smooth scrolling
+    //   });
+    // } else {
+    //   window.scrollTo({
+    //     top: 480,
+    //     behavior: 'smooth', // Ensures smooth scrolling
+    //   });
+    // }
   };
 
   const onScrolling = (status: boolean) => {
@@ -108,8 +108,8 @@ const FoodContent = () => {
 
   return (
     <section className="grid grid-cols-12">
-      <div className="grid  gap-4 col-span-12 lg:col-span-8 ">
-        <div className="flex overflow-x-scroll ml-4 mt-2" ref={navRef}>
+      <div className="grid   col-span-12 lg:col-span-8 ">
+        <div className="flex sticky top-[76px] bg-white z-10 overflow-x-scroll pl-4 pt-2 pb-2" ref={navRef}>
           {groupCounts
             .reduce(
               ({ firstItemsIndexes, offset }, count) => {
@@ -126,7 +126,7 @@ const FoodContent = () => {
               return (
                 <div
                   key={itemIndex}
-                  className={`flex w-48 gap-4 rounded-full px-2  py-2  ${
+                  className={`flex w-48  rounded-full px-2  py-2  ${
                     activeIndex === itemIndex ? ' bg-current ' : '  '
                   } `}
                 >
@@ -157,7 +157,7 @@ const FoodContent = () => {
               );
             })}
         </div>
-        <div className="h-screen">
+        <div className="h-screen mb-14">
           <GroupedVirtuoso
             ref={virtuoso}
             onScroll={onScroll}
@@ -173,10 +173,7 @@ const FoodContent = () => {
             }}
             itemContent={(index) => {
               return (
-                <div
-                  style={{ padding: '0.5rem 1rem' }}
-                  className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5 gap-4"
-                >
+                <div className="grid p-4 pt-0 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5 gap-4  ">
                   {renderProducts(allCategories[index]?.products)}
                 </div>
               );

@@ -28,6 +28,7 @@ export const VariantCard = dynamic(() => import('../components/Card/VariantCard'
 export const OptionValuesModal = dynamic(() => import('../components/Modal/OptionValues'));
 export const OptionCard = dynamic(() => import('../components/Card/OptionCard'));
 export const ProductModal = dynamic(() => import('../components/Modal/ProductModal'));
+export const BranchesModal = dynamic(() => import('../components/Modal/BranchesModal'));
 export const BottomNavigation = dynamic(() => import('../content/BottomNavigation'));
 export const ControlledTextArea = dynamic(() => import('../components/ControlledForms/ControlledTextArea'));
 export const Loader = dynamic(() => import('../components/Loader/Loader'));

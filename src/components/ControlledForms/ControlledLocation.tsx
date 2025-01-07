@@ -111,7 +111,7 @@ const Index = ({
                       <p className="text-sm font-semibold text-gray-800 ">Тантай ойр</p>
                     </span>
                   )}
-                  <div className="h-[29vh] overflow-auto">
+                  <div className="h-[20vh] overflow-auto">
                     {locations.map((item, index) => (
                       <div
                         onClick={() => onNearestLocation(item)}

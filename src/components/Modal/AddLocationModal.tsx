@@ -133,7 +133,7 @@ const AddLocationModal = ({ visible, onClose, onConfirm }: Props) => {
           <span className="text-lg text-white">Захиалах байршил</span>
         </Modal.Header>
         <Modal.Body>
-          <div className="grid w-full h-[74vh] overflow-auto mb-[103px]">
+          <div className="grid w-full h-full overflow-auto mb-[103px]">
             {isLoaded ? (
               <GoogleMap
                 mapContainerStyle={containerStyle}
@@ -214,33 +214,34 @@ const AddLocationModal = ({ visible, onClose, onConfirm }: Props) => {
                       </div>
                     ))}
                   </div>
-
-                  <p className="text-sm font-semibold text-gray-800 ">Хүргүүлэх хаяг</p>
-                  <div className="relative">
-                    <img src={locAddress.src} className="w-8 h-8 absolute  top-[7px] left-[7px]  " />
-                    <input
-                      value={address}
-                      placeholder={''}
-                      disabled
-                      className="h-12 w-full  bg-white placeholder:text-sm px-10 py-2 text-gray-800  transition duration-300 border border-gray-300 rounded-lg focus:border-transparent focus:outline-none focus:ring-1 focus:ring-gray-300"
-                      type={'text'}
-                    />
-                  </div>
                 </div>
               )}
             </div>
           </div>
         </Modal.Body>
-        <Modal.Footer className="absolute bg-white bottom-0 w-full p-0">
-          <div className="w-full p-4 flex text-sm place-items-center">
-            <button
-              onClick={onFinished}
-              className={`flex w-full font-semibold cursor-pointer place-content-center items-center rounded-lg ${
-                isEmpty(address) ? 'bg-gray-300 text-gray-500' : 'bg-current text-white'
-              } px-4 py-4 text-sm`}
-            >
-              {t('confirm', 'Баталгаажуулах')}
-            </button>
+        <Modal.Footer className="absolute grid bg-white bottom-0 w-full p-0">
+          <div className="grid w-full gap-4 p-4">
+            <p className="text-sm font-semibold text-gray-800 ">Хүргүүлэх хаяг</p>
+            <div className="relative">
+              <img src={locAddress.src} className="w-8 h-8 absolute  top-[7px] left-[7px]  " />
+              <input
+                value={address}
+                placeholder={''}
+                disabled
+                className="h-12 w-full  bg-white placeholder:text-sm px-10 py-2 text-gray-800  transition duration-300 border border-gray-300 rounded-lg focus:border-transparent focus:outline-none focus:ring-1 focus:ring-gray-300"
+                type={'text'}
+              />
+            </div>
+            <div className="w-full ">
+              <button
+                onClick={onFinished}
+                className={`flex w-full font-semibold cursor-pointer place-content-center items-center rounded-lg ${
+                  isEmpty(address) ? 'bg-gray-300 text-gray-500' : 'bg-current text-white'
+                } px-4 py-4 text-sm`}
+              >
+                {t('confirm', 'Баталгаажуулах')}
+              </button>
+            </div>
           </div>
         </Modal.Footer>
       </div>

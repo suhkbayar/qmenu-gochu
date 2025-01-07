@@ -9,7 +9,6 @@ import { FaRegUser } from 'react-icons/fa';
 import { HiOutlineBuildingLibrary } from 'react-icons/hi2';
 import useSound from 'use-sound';
 import { SOUND_LINK, validPrefixes } from '../../constants/constant';
-import Keyboard from 'react-simple-keyboard';
 import { IoCheckmarkCircleOutline } from 'react-icons/io5';
 import { IoAlertCircleOutline } from 'react-icons/io5';
 
@@ -121,36 +120,6 @@ const Index = ({ register, errors, setValue, reset }: Props) => {
     });
     keyboard.current!.clearInput();
     setBuyer(null);
-  };
-
-  const onKeyPress = (button: string) => {
-    if (button === '{deleteall}') {
-      setBuyerRegister('');
-      reset({
-        buyer: null,
-      });
-      setBuyer(null);
-      keyboard.current!.clearInput();
-    }
-  };
-
-  const onKeyPressPerson = (button: string) => {
-    if (button === '{deleteall}') {
-      setPersonRegister('');
-      reset({
-        buyer: null,
-      });
-      setBuyer(null);
-      keyboard.current!.clearInput();
-    }
-    if (button === '{backspace}' && personRegister.length === 1) {
-      setPersonRegister('');
-      reset({
-        buyer: null,
-      });
-      setBuyer(null);
-      keyboard.current!.clearInput();
-    }
   };
 
   return (
@@ -308,49 +277,6 @@ const Index = ({ register, errors, setValue, reset }: Props) => {
                   </svg>
                 </div>
               )}
-              <div className="mt-4 w-full">
-                {isCompany ? (
-                  <Keyboard
-                    key={1}
-                    keyboardRef={(r) => (keyboard.current = r)}
-                    input={buyerRegister}
-                    onChange={onRegister}
-                    onKeyPress={onKeyPress}
-                    layout={{
-                      default: ['1 2 3', '4 5 6', '7 8 9', '{deleteall} 0 {bksp}'],
-                      shift: ['! / #', '$ % ^', '& * (', '{deleteall} ) +', '{bksp}'],
-                    }}
-                    theme="hg-theme-default hg-layout-numeric numeric-theme myTheme"
-                    display={{
-                      '{deleteall}': 'C',
-                      '{space}': 'Space',
-                      '{bksp}': '⌫',
-                    }}
-                  />
-                ) : (
-                  <Keyboard
-                    key={2}
-                    input={personRegister}
-                    keyboardRef={(r) => (keyboard.current = r)}
-                    onChange={onPersonRegister}
-                    onKeyPress={onKeyPressPerson}
-                    layout={{
-                      default: [
-                        '1 2 3 4 5 6 7 8 9 0',
-                        'А Б В Г Д Е Ё Ж З И Й К',
-                        'Л М Н О Ө Р С Т У Ү Ф Х',
-                        'Ц Ч Ш Ъ Ы Ь Э Ю Я',
-                        '{deleteall} {backspace}',
-                      ],
-                    }}
-                    display={{
-                      '{deleteall}': 'Арилгах',
-                      '{backspace}': '⌫',
-                    }}
-                    theme="hg-theme-default hg-layout-numeric numeric-theme"
-                  />
-                )}
-              </div>
             </div>
           </>
         )}

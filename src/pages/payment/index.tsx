@@ -42,7 +42,6 @@ const Index = () => {
           (link) => link.name.toUpperCase() === paymentType.toUpperCase(),
         )?.link;
       }
-
       if (link) {
         window.location.href = link;
         setVisiblePending(true);
@@ -106,7 +105,10 @@ const Index = () => {
       showNotification(NotificationType.ERROR, err.message);
 
       if (participant) {
-        router.push(`/partner?id=${participant.id}`);
+        let partnerId = localStorage?.getItem('partnerId');
+        if (partnerId) {
+          router.push(`/partner?id=${partnerId}`);
+        }
       }
     },
     onCompleted: (data) => {
@@ -264,7 +266,7 @@ const Index = () => {
           />
         )}
 
-        <div className="absolute bg-white bottom-0 w-full border-t border-gray-100 p-4">
+        <div className=" fixed cursor-pointer bottom-0 p-4 sm:bottom-0 transition-all duration-500  md:bottom-5 lg:bottom-5 w-full   sm:w-full md:w-6/12 lg:w-6/12 xl:w-4/12 2xl:w-4/12">
           <div className="w-full flex justify-between text-sm place-items-center">
             <div onClick={() => goBack()} className="flex p-4 rounded-lg bg-gray-300 px-6 ">
               <span className="text-white">Буцах</span>

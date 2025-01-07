@@ -29,7 +29,7 @@ const fallbackCenter = {
 const Index = () => {
   const router = useRouter();
   const { id, order: orderId } = router.query;
-  const { order, user, participant, load } = useCallStore();
+  const { order, user, participant, load, selectedParticipant } = useCallStore();
   const { t } = useTranslation('language');
   const [visibleLocation, setVisibleLocation] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<google.maps.LatLngLiteral | null>(null);
@@ -118,13 +118,14 @@ const Index = () => {
         variables: {
           participant: id,
           input: {
-            type: TYPE.DELIVERY,
+            type: order.type,
             items: items,
             deliveryDate: order.deliveryDate,
             contact: data.phone,
             address: data.location,
             name: data.userName,
             comment: data.comment,
+            channelId: order.type === TYPE.TAKE_AWAY ?  selectedParticipant?.id : null,
             guests: 1,
           },
         },
@@ -174,13 +175,9 @@ const Index = () => {
             showLocatioin={() => setVisibleLocation(true)}
           />
         </form>
-        <div className="absolute bg-white bottom-0 w-full border-t border-gray-100 p-4">
+        <div className=" fixed cursor-pointer bottom-0 p-4 sm:bottom-0 transition-all duration-500  md:bottom-5 lg:bottom-5 w-full   sm:w-full md:w-6/12 lg:w-6/12 xl:w-4/12 2xl:w-4/12">
           <div className="w-full flex justify-between text-sm place-items-center">
-            <div
-              onClick={() => goBack()}
-              className="flex p-4 rounded-lg bg-gray-300 px-6
-             "
-            >
+            <div onClick={() => goBack()} className="flex p-4 rounded-lg bg-gray-300 px-6 ">
               <span className="text-white">Буцах</span>
             </div>
             <button
