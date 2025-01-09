@@ -40,6 +40,11 @@ const BranchesModal = ({ visible, onClose }: Props) => {
     }
   };
 
+  const onCloseBranchSelect = () => {
+    setSelectedParticipant(participant);
+    onClose();
+  };
+
   return (
     <Modal
       theme={customThemeDraftModal}
@@ -47,19 +52,19 @@ const BranchesModal = ({ visible, onClose }: Props) => {
       position="center"
       dismissible
       show={visible}
-      onClose={onClose}
+      onClose={onCloseBranchSelect}
     >
       <div>
         <Modal.Header className="bg-current ">
           <span className="text-lg text-white">Салбар сонгох</span>
         </Modal.Header>
         <Modal.Body>
-          <div className="max-h-[28rem] overflow-auto">
+          <div className="h-fit overflow-auto mb-16">
             {!isEmpty(branches) && (
               <div className="grid gap-4 ">
                 {branches?.map((item: any) => (
                   <div
-                    className={`grid grid-cols-6 gap-4 p-2 rounded-lg  bg-gray-100 shadow-sm  border cursor-pointer  ${
+                    className={`grid grid-cols-6 gap-2 p-2 rounded-lg  bg-gray-100 shadow-sm  border cursor-pointer  ${
                       selectedParticipant?.id === item?.id ? '  border-current' : ' border-transparent'
                     }  `}
                     key={item?.id}
@@ -81,7 +86,7 @@ const BranchesModal = ({ visible, onClose }: Props) => {
             )}
           </div>
         </Modal.Body>
-        <Modal.Footer className="  absolute bg-white bottom-0 w-full space-x-0 p-0">
+        <Modal.Footer className="  fixed bg-white bottom-0 w-full space-x-0 p-0">
           <div className="w-full p-4 flex justify-between text-sm place-items-center">
             <button
               onClick={() => onClose()}

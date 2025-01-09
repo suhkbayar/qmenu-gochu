@@ -84,22 +84,12 @@ const FoodContent = () => {
   };
 
   const onScroll = () => {
-    // if (window.innerWidth < 640) {
-    //   window.scrollTo({
-    //     top: 508,
-    //     behavior: 'smooth', // Ensures smooth scrolling
-    //   });
-    // } else if (window.innerWidth < 1023) {
-    //   window.scrollTo({
-    //     top: 800,
-    //     behavior: 'smooth', // Ensures smooth scrolling
-    //   });
-    // } else {
-    //   window.scrollTo({
-    //     top: 480,
-    //     behavior: 'smooth', // Ensures smooth scrolling
-    //   });
-    // }
+    if (window.innerWidth > 640) {
+      window.scrollTo({
+        top: 800,
+        behavior: 'smooth', // Ensures smooth scrolling
+      });
+    }
   };
 
   const onScrolling = (status: boolean) => {
@@ -173,7 +163,7 @@ const FoodContent = () => {
             }}
             itemContent={(index) => {
               return (
-                <div className="grid p-4 pt-0 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5 gap-4  ">
+                <div className="grid p-2 pt-0 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5  ">
                   {renderProducts(allCategories[index]?.products)}
                 </div>
               );

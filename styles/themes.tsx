@@ -30,7 +30,7 @@ export const customThemeModal = {
     },
   },
   content: {
-    base: 'relative h-[900vh] w-full  p-0 md:h-3/5  rounded-lg',
+    base: 'relative h-full w-full  p-0 md:h-3/5  rounded-lg',
     inner:
       'relative rounded-2xl overflow-auto md:rounded-lg bg-white shadow dark:bg-gray-700 flex flex-col h-full lg:h-3/5 justify-between lg:justify-start',
   },

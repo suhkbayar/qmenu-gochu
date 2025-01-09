@@ -72,8 +72,13 @@ const Index = ({ product, orderItem }: Props) => {
               width={500}
               height={600}
               placeholder="empty"
+              className=' h-[160px] sm:h-[200px]'
               object-fit="cover"
-              style={{ borderRadius: '8px' }}
+              style={{
+                borderRadius: '8px',
+                width: '100%', // Ensure fixed width
+                objectFit: 'cover', // This ensures the image covers the area without distortion
+              }}
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               priority={true}
             />
@@ -82,7 +87,7 @@ const Index = ({ product, orderItem }: Props) => {
             <h2 className="line-clamp-2 md:text-lg content-center h-9 md:h-12 leading-4 md:leading-tight font-bold  dark:text-gray-400 text-sm text-misty">
               <Translate>{product.name} </Translate>
             </h2>
-            <span className="line-clamp-2  mb-1 dark:text-gray-400  leading-3 h-7 text-gray-500 text-sm  ">
+            <span className="line-clamp-2  mb-1 dark:text-gray-400  leading-[15px] h-[31px] text-gray-500 text-sm  ">
               <Translate>{product.description} </Translate>
             </span>
             <span className="block text-gray-500 text-sm mb-2 h-7 ">{CalculateProductsPrice(product.variants)}</span>

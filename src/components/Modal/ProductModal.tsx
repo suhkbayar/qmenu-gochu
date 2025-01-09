@@ -156,7 +156,7 @@ const Index = ({ onClose, product = {}, visible }: Props) => {
           <span className="text-lg text-white">{t('mainPage.ReadMore')}</span>
         </Modal.Header>
         <Modal.Body>
-          <div className="w-full max-h-[38rem] sm:max-h-[34rem] overflow-auto">
+          <div className="w-full h-full overflow-auto">
             <div className="text-center sm:mt-0 sm:ml-4 sm:text-left lg:flex lg:place-content-center">
               <ImageSection />
             </div>
