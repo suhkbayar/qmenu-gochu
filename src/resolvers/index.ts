@@ -1,11 +1,13 @@
 import * as yup from 'yup';
 import { PATTERN_PHONE } from '../constants/pattern';
+import { TYPE } from '../constants/constant';
 
-export const userSchema = yup.object().shape({
-  phone: yup.string().required('Та утасны дугаар оруулна уу').matches(PATTERN_PHONE, 'Утасны дугаар алдаатай байна'),
-  userName: yup.string().required('Та өөрийн нэр оруулна уу'),
-  location: yup.string().required('Та хаяг оруулна уу'),
-});
+export const userSchema = (order) =>
+  yup.object().shape({
+    phone: yup.string().required('Та утасны дугаар оруулна уу').matches(PATTERN_PHONE, 'Утасны дугаар алдаатай байна'),
+    userName: yup.string().required('Та өөрийн нэр оруулна уу'),
+    location: order?.type === TYPE.TAKE_AWAY ? yup.string().notRequired() : yup.string().required('Та хаяг оруулна уу'),
+  });
 
 export const loginSchema = yup.object().shape({
   phone: yup.string().required('Та утасны дугаар оруулна уу').matches(PATTERN_PHONE, 'Утасны дугаар алдаатай байна'),

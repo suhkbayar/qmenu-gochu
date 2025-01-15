@@ -35,7 +35,7 @@ const Index = () => {
   const [selectedLocation, setSelectedLocation] = useState<google.maps.LatLngLiteral | null>(null);
   const { control, handleSubmit, setValue, watch } = useForm<FieldValues>({
     mode: 'all',
-    resolver: yupResolver(userSchema) as any,
+    resolver: yupResolver(userSchema(order)) as any,
   });
 
   const [createOrder, { loading }] = useMutation(CREATE_ORDER, {
@@ -122,10 +122,10 @@ const Index = () => {
             items: items,
             deliveryDate: order.deliveryDate,
             contact: data.phone,
-            address: data.location,
+            address: order.type === TYPE.TAKE_AWAY ? null : data.location,
             name: data.userName,
             comment: data.comment,
-            channelId: order.type === TYPE.TAKE_AWAY ?  selectedParticipant?.id : null,
+            channelId: order.type === TYPE.TAKE_AWAY ? selectedParticipant?.id : null,
             guests: 1,
           },
         },
@@ -164,16 +164,17 @@ const Index = () => {
           <ControlledInput control={control} disabled text="Хэрэглэгчийн утас" name="phone" type="text" />
 
           <ControlledTextArea control={control} name="comment" text="Нэмэлт тэмдэглэл" />
-
-          <ControlledLocation
-            control={control}
-            selectedLocation={selectedLocation}
-            text="Хаяг оруулах"
-            setValue={setValue}
-            name="location"
-            type="text"
-            showLocatioin={() => setVisibleLocation(true)}
-          />
+          {order?.type === TYPE.DELIVERY && (
+            <ControlledLocation
+              control={control}
+              selectedLocation={selectedLocation}
+              text="Хаяг оруулах"
+              setValue={setValue}
+              name="location"
+              type="text"
+              showLocatioin={() => setVisibleLocation(true)}
+            />
+          )}
         </form>
         <div className=" fixed cursor-pointer bottom-0 p-4 sm:bottom-0 transition-all duration-500  md:bottom-5 lg:bottom-5 w-full   sm:w-full md:w-6/12 lg:w-6/12 xl:w-4/12 2xl:w-4/12">
           <div className="w-full flex justify-between text-sm place-items-center">
@@ -183,7 +184,9 @@ const Index = () => {
             <button
               onClick={handleSubmit(onSubmit)}
               className={`flex gap-4  font-semibold cursor-pointer place-content-center items-center rounded-lg ${
-                isEmpty(phone && userName && location) ? 'bg-gray-300 text-gray-500' : 'bg-current text-white'
+                isEmpty(order?.type === TYPE.TAKE_AWAY ? phone && userName : phone && userName && location)
+                  ? 'bg-gray-300 text-gray-500'
+                  : 'bg-current text-white'
               } px-4 py-4 text-sm`}
             >
               <span>{t('mainPage.ToBeContinued')}</span>
