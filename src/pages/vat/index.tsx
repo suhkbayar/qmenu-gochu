@@ -62,7 +62,6 @@ const Index = () => {
   return (
     <section className="flex w-full justify-center">
       <div className="relative w-full h-screen sm:w-3/6 md:w-3/5 lg:w-3/5 xl:w-3/6 2xl:w-2/5">
-        {/* Step Indicator */}
         <div className="w-full mt-4 px-4">
           <Step totalSteps={5} activeStep={3} />
         </div>
@@ -92,7 +91,7 @@ const Index = () => {
               {order?.items.length > 0 && (
                 <>
                   <span className="block text-white text-md font-semibold">
-                    ( {order?.totalAmount.toLocaleString()} {CURRENCY} )
+                    ( {order?.grandTotal.toLocaleString()} {CURRENCY} )
                   </span>
                 </>
               )}

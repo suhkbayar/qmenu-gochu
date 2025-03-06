@@ -21,10 +21,7 @@ const BranchesModal = ({ visible, onClose }: Props) => {
 
   const [getBranches, { data }] = useLazyQuery(GET_BRANCHES, {
     onCompleted: (data) => {
-      const fetchedBranches = data?.getParticipants || [];
-      const updatedBranches = [...fetchedBranches.filter((item) => item.id !== participant.id), participant];
-
-      setBranches(updatedBranches);
+      setBranches(data?.getParticipants);
     },
   });
 

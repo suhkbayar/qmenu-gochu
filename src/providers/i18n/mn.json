@@ -32,6 +32,9 @@
     "Others": "Бусад",
     "Meals": "Хоолнууд",
     "AppleJuice": "Алимны шүүс",
+    "validation": {
+      "mandatoryOptions": "Шаардлагатай сонголтуудыг сонгоно уу: {{options}}"
+    },
     "Open": "Нээлттэй",
     "Closed": "Хаалттай",
     "FreeShipping": "Хүргэлттэй",
@@ -249,7 +252,7 @@
     "ASAP": "Яаралтай",
     "AddToCard": "Сагс",
     "ReadMore": "Дэлгэрэнгүй",
-    "Variants": "Сонголтууд ",
+    "Variants": "Хувилбарууд ",
     "FastDelivery": "Хүргэлт",
     "Enter": "Сонгох",
     "RestaurantAddress": "Рестораны хаяг",
@@ -313,7 +316,7 @@
     "Option": "Сонголт",
     "collapse": "Хураах",
     "see_more": "Илүү их",
-    "additional": "Нэмэлт",
+    "additional": "Сонголт",
     "taxpayer_type": "Татвар төлөгчийн төрөл",
     "citizen": "Иргэн",
     "enter_registration_number": "Регистерийн дугаар оруулна уу",

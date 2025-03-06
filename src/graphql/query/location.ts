@@ -11,8 +11,8 @@ export const GET_NEAREST_LOCATIONS = gql`
 `;
 
 export const SEARCH_LOCATIONS = gql`
-  query searchLocations($keyword: String, $lat: Float, $lon: Float, $size: Int) {
-    searchLocations(keyword: $keyword, lat: $lat, lon: $lon, size: $size) {
+  query searchLocations($query: String, $lat: Float, $lon: Float, $size: Int) {
+    searchLocations(query: $query, lat: $lat, lon: $lon, size: $size) {
       ...LocationFields
     }
   }

@@ -65,7 +65,7 @@ const OrderType = () => {
       <div className="h-full items-center place-content-center flex gap-10">
         <div
           onClick={() => handleOrderType(TYPE.DELIVERY)}
-          className=" p-4 sm:p-10 justify-items-center shadow-lg bg-macDonald rounded-xl hover:shadow-lg cursor-pointer  "
+          className=" grid p-4 sm:p-10 justify-items-center shadow-lg bg-macDonald rounded-xl hover:shadow-lg cursor-pointer  "
         >
           <div className="w-12 sm:w-16 h-12 sm:h-16 object-cover  max-w-xl">
             <DeliveryIcon />
@@ -76,7 +76,7 @@ const OrderType = () => {
         </div>
         <div
           onClick={() => handleOrderType(TYPE.TAKE_AWAY)}
-          className="  p-4 sm:p-10  justify-items-center place-items-center bg-macDonald shadow-lg rounded-xl hover:shadow-lg cursor-pointer"
+          className=" grid  p-4 sm:p-10  justify-items-center place-items-center bg-macDonald shadow-lg rounded-xl hover:shadow-lg cursor-pointer"
         >
           <div className="w-12 sm:w-16 h-12 sm:h-16 object-cover  max-w-xl">
             <TakeAway />

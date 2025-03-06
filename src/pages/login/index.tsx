@@ -67,7 +67,7 @@ const Index = () => {
   };
 
   const goPasswordRecovery = () => {
-    router.push('/password-recovery');
+    router.push(`/password-recovery?id=${id}`);
   };
 
   if (loading) return <Loader />;

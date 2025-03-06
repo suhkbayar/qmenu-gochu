@@ -70,21 +70,33 @@ const DraftModal = ({ visible, onClose }: Props) => {
             {!isEmpty(order?.items) && (
               <div className="grid gap-4 p-4">
                 {order?.items.map((item: any) => (
-                  <div className="grid grid-cols-6 gap-4">
-                    <div className="flex col-span-1 justify-between items-center">
-                      <img
-                        className=" rounded-xl "
-                        src={products.find((product) => product.productId === item?.productId)?.image}
-                      />
-                    </div>
+                  <div className="grid w-full border-b border-gray-200 ">
+                    <div className="grid grid-cols-6 gap-4">
+                      <div className="flex col-span-1 justify-between items-center">
+                        <img
+                          className=" rounded-xl "
+                          src={products.find((product) => product.productId === item?.productId)?.image}
+                        />
+                      </div>
 
-                    <span className="col-span-3 flex self-center items-center font-semibold text-gray-700">
-                      {item.quantity} <IoIosClose /> {item.name}
-                    </span>
-                    <div className="flex col-span-2 justify-between items-center">
-                      <span>{item.price.toLocaleString()} ₮</span>
-                      <CiTrash onClick={() => remove(item)} className="text-lg text-red-500" />
+                      <span className="col-span-3 flex self-center items-center font-semibold text-gray-700">
+                        {item.quantity} <IoIosClose /> {item.name}
+                      </span>
+                      <div className="flex col-span-2 justify-between items-center">
+                        <span>{item.price.toLocaleString()} ₮</span>
+                        <CiTrash onClick={() => remove(item)} className="text-lg text-red-500" />
+                      </div>
                     </div>
+                    {item.options.length > 0 && (
+                      <div className="grid ml-14 ">
+                        {item.options.map((option: any) => (
+                          <span className="text-sm text-gray-500">
+                            -{option.name}: {option.value ?? ''}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                    <div className="mb-4" />
                   </div>
                 ))}
               </div>

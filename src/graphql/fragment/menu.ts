@@ -55,6 +55,7 @@ export const MENU_OPTION_FIELDS = gql`
     id
     name
     price
+    mandatory
     type
     values
     state

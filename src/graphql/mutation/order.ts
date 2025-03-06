@@ -119,3 +119,36 @@ export const CORRECTION_TRANSACTION = gql`
   ${TRANSACTION_FIELDS}
   ${ORDER_LOYALTY_FIELDS}
 `;
+
+export const CALCULATE_DELIVERY_ZONE = gql`
+  mutation calculateDeliveryZone($id: ID!, $input: DeliveryPoint!) {
+    calculateDeliveryZone(id: $id, input: $input) {
+      ...OrderFields
+      items {
+        ...OrderItemFields
+      }
+      transactions {
+        ...TransactionFields
+      }
+      table {
+        ...TableFields
+      }
+      discounts {
+        ...DiscountsFields
+      }
+      charges {
+        ...ChargesFields
+      }
+      loyalties {
+        ...OrderLoyaltyFields
+      }
+    }
+  }
+  ${TABLE_FIELDS}
+  ${ORDER_FIELDS}
+  ${DISCOUNTS_FIELDS}
+  ${CHARGES_FIELDS}
+  ${ORDER_ITEM_FIELDS}
+  ${TRANSACTION_FIELDS}
+  ${ORDER_LOYALTY_FIELDS}
+`;

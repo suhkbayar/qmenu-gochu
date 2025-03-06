@@ -72,7 +72,7 @@ const Index = ({ product, orderItem }: Props) => {
               width={500}
               height={600}
               placeholder="empty"
-              className=' h-[160px] sm:h-[200px]'
+              className=" h-[160px] sm:h-[200px]"
               object-fit="cover"
               style={{
                 borderRadius: '8px',
@@ -83,14 +83,14 @@ const Index = ({ product, orderItem }: Props) => {
               priority={true}
             />
           </div>
-          <div className="m-4  mb-0">
+          <div className="m-4  mt-0 mb-0">
             <h2 className="line-clamp-2 md:text-lg content-center h-9 md:h-12 leading-4 md:leading-tight font-bold  dark:text-gray-400 text-sm text-misty">
               <Translate>{product.name} </Translate>
             </h2>
-            <span className="line-clamp-2  mb-1 dark:text-gray-400  leading-[15px] h-[31px] text-gray-500 text-sm  ">
+            {/* <span className="line-clamp-2  mb-1 dark:text-gray-400  leading-[15px] h-[31px] text-gray-500 text-sm  ">
               <Translate>{product.description} </Translate>
-            </span>
-            <span className="block text-gray-500 text-sm mb-2 h-7 ">{CalculateProductsPrice(product.variants)}</span>
+            </span> */}
+            <span className="block text-gray-500 text-sm mb-0 h-7 ">{CalculateProductsPrice(product.variants)}</span>
           </div>
           {isConfigurable(product) ? (
             <div className=" bg-current rounded-b-xl py-2 ">
@@ -134,7 +134,7 @@ const Index = ({ product, orderItem }: Props) => {
           )}
         </div>
       </div>
-      <ProductModal visible={visible} onClose={() => onCloseProduct()} product={product} />
+      {visible && <ProductModal visible={visible} onClose={() => onCloseProduct()} product={product} />}
     </>
   );
 };

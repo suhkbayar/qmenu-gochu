@@ -1,12 +1,12 @@
 import React from 'react';
 import { IMenuVariant } from '../../types/menu';
-import { Translate } from 'react-auto-translate';
 import { CiSquareMinus, CiSquarePlus } from 'react-icons/ci';
 import { IOrderItem } from '../../types';
 import check from '../../assets/order/Check.png';
 import unCheck from '../../assets/order/UnCheck.png';
 import { CURRENCY } from '../../constants/currency';
-import Image from 'next/image';
+import { Translate } from 'react-auto-translate';
+import { isEmpty } from 'lodash';
 
 type Props = {
   variant: IMenuVariant;
@@ -22,31 +22,31 @@ const Index = ({ variant, selectedItem, onSelect, onRemove }: Props) => {
     <>
       <div
         onClick={() => selectedItem.id !== variant.id && onSelect(variant)}
-        className={`flex-shrink-0 grid content-between w-56 h-24 bg-white rounded-lg hover:shadow-md border hover:border-current m-2 p-2 pb-0 dark:bg-gray-800 ${
+        className={`flex-shrink-0 grid  content-between w-36 h-32 bg-white rounded-lg hover:shadow-md border hover:border-current m-2 p-2 pb-0 ${
           selectedItem?.id === variant.id ? 'border-current' : ''
         }`}
       >
         <div className="flex justify-between">
-          <h2 className="line-clamp-2  font-normal text-misty text-sm ">
-            <Translate>{variant.name} </Translate>
+          <h2 className="line-clamp-2  font-semibold text-current text-sm ">
+            {!isEmpty(variant.name) && <Translate>{variant.name}</Translate>}
           </h2>
-          {/* <div className="relative flex justify-center items-center h-[19px] w-[20px] ">
-            <Image
-              alt=""
-              placeholder="empty"
-              priority={true}
-              src={selectedItem.id === variant.id ? check.src : unCheck.src}
-              className="animate-quantity-change w-full h-auto"
-              fill
-              sizes="19px 20px"
+
+          {/* {selectedItem.id === variant.id && (
+            <img
+              alt="check-variant"
+              src={check.src}
+              className="animate-quantity-change"
+              width={20}
+              style={{ height: 19 }}
             />
-          </div> */}
+          )} */}
         </div>
 
-        <div className="flex items-center place-content-between py-1">
-          <span className="text-current font-semibold text-sm">
-            {variant.price.toLocaleString()} {CURRENCY}
-          </span>
+        <span className="text-misty font-normal text-sm">
+          {variant.price.toLocaleString()} {CURRENCY}
+        </span>
+
+        <div className="flex items-center place-content-between justify-center py-1">
           {selectedItem.id === variant.id ? (
             <div className="flex items-center place-content-end">
               <CiSquareMinus onClick={() => onRemove(variant)} className="cursor-pointer text-current w-10 h-10" />

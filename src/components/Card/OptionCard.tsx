@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { CURRENCY } from '../../constants/currency';
 import { isEmpty } from 'lodash';
 import useSound from 'use-sound';
@@ -7,14 +7,27 @@ import { OptionValuesModal } from '..';
 
 type Props = {
   option: any;
+  selectedOption: any;
+  validateOptions: any[];
   onSelect: (option: any) => void;
   value: string;
   isSelected: boolean;
   visibleValues: boolean;
+  selectOption: (option: any) => void;
   setVisibleValues: (visibleValues: boolean) => void;
 };
 
-const Index = ({ option, onSelect, isSelected, value, setVisibleValues, visibleValues }: Props) => {
+const Index = ({
+  option,
+  onSelect,
+  selectedOption,
+  validateOptions,
+  isSelected,
+  value,
+  setVisibleValues,
+  selectOption,
+  visibleValues,
+}: Props) => {
   const [play] = useSound(SOUND_LINK, {
     volume: 1,
   });
@@ -22,29 +35,42 @@ const Index = ({ option, onSelect, isSelected, value, setVisibleValues, visibleV
   const onSelectOption = (option: any) => {
     play();
     if (!isEmpty(option.values) && isEmpty(value)) {
-      return setVisibleValues(true);
+      selectOption(option);
+      setVisibleValues(true);
+      return;
     }
-
     onSelect(option);
   };
 
   const onSelectValue = (value: any) => {
-    onSelect({ ...option, value: value });
+    if (!selectedOption) {
+      return;
+    }
+
     setVisibleValues(false);
+
+    onSelect({ ...selectedOption, value: value });
   };
 
   return (
     <>
       <div
-        onClick={() => onSelectOption(option)}
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelectOption(option);
+        }}
         className={` flex-shrink-0 grid max-w-full button-variant  content-between  rounded-lg  p-2 px-8 m-2 dark:bg-gray-800 ${
-          isSelected ? 'bg-macDonald' : 'bg-gray-200   '
+          isSelected
+            ? 'bg-macDonald'
+            : validateOptions.some((opt) => opt.id === option.id)
+            ? ' border border-red-500 bg-gray-200  '
+            : 'bg-gray-200   '
         }`}
       >
         <div className="flex">
           <span className="line-clamp-2  font-semibold text-misty text-lg">{option.name}</span>
         </div>
-        <span className="text-white text-md">{value ?? ' '}</span>
+        <span className="text-white text-md">{!isEmpty(value) ? value : !isEmpty(option.values) ? 'Сонгох ' : ''}</span>
         <span className={`font-semibold ${isSelected ? 'text-white' : 'text-macDonald'} text-md`}>
           {option.price.toLocaleString()} {CURRENCY}
         </span>

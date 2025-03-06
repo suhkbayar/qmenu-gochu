@@ -19,7 +19,7 @@ const Index: React.FC<Props> = ({ watch, onSelect, banks }) => {
   if (isEmpty(banks)) return null;
 
   return (
-    <div className="w-full bg-white rounded-lg  mt-2 dark:bg-gray-700">
+    <div className="w-full bg-white rounded-lg  mt-2 ">
       <div className="grid grid-cols-4 gap-6 ">
         {banks.map((bank, index) => (
           <div

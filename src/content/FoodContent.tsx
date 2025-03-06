@@ -126,7 +126,7 @@ const FoodContent = () => {
                     </div>
                   </div>
 
-                  <div className={`w-28 text-start dark:bg-gray-700 content-center`}>
+                  <div className={`w-28 text-start  content-center`}>
                     <div
                       className={`cursor-pointer text-center text-md ${
                         activeIndex === itemIndex
@@ -156,14 +156,20 @@ const FoodContent = () => {
             rangeChanged={handleRangeChanged}
             groupContent={(index) => {
               return (
-                <div className=" hidden bg-white py-2 shadow-lg border-t dark:bg-gray-700 dark:text-white border-gray-100 items-center text-center place-content-center text-sm text-gray-500  ">
+                <div
+                  key={index}
+                  className=" hidden bg-white py-2 shadow-lg border-t dark:bg-gray-700 dark:text-white border-gray-100 items-center text-center place-content-center text-sm text-gray-500  "
+                >
                   {allCategories[index].name}
                 </div>
               );
             }}
             itemContent={(index) => {
               return (
-                <div className="grid p-2 pt-0 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5  ">
+                <div
+                  key={index}
+                  className="grid p-2 pt-0 grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-5  "
+                >
                   {renderProducts(allCategories[index]?.products)}
                 </div>
               );

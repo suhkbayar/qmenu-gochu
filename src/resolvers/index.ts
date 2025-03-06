@@ -7,6 +7,7 @@ export const userSchema = (order) =>
     phone: yup.string().required('Та утасны дугаар оруулна уу').matches(PATTERN_PHONE, 'Утасны дугаар алдаатай байна'),
     userName: yup.string().required('Та өөрийн нэр оруулна уу'),
     location: order?.type === TYPE.TAKE_AWAY ? yup.string().notRequired() : yup.string().required('Та хаяг оруулна уу'),
+    comment: yup.string().required('Та дэлгэрэнгүй мэдээлэл оруулна уу'),
   });
 
 export const loginSchema = yup.object().shape({
@@ -35,4 +36,18 @@ export const registerSchema = yup.object().shape({
   year: yup.string().required('Та төрсөн он сонгоно уу'),
   month: yup.string().required('Та төрсөн сар сонгоно уу'),
   day: yup.string().required('Та төрсөн өдөр сонгоно уу'),
+});
+
+export const resetPassSchema = yup.object().shape({
+  password: yup
+    .string()
+    .required('Та нууц үгээ оруулна уу')
+    .min(6, 'Нууц үг 6 тэмдэгтээс багагүй байх ёстой')
+    .matches(/[A-Z]/, 'Нууц үгэнд том үсэг байх ёстой')
+    .matches(/[a-z]/, 'Нууц үгэнд жижиг үсэг байх ёстой')
+    .matches(/[0-9]/, 'Нууц үгэнд тоо байх ёстой'),
+  repeatPassword: yup
+    .string()
+    .required('Та нууц үгээ давтаж оруулна уу')
+    .oneOf([yup.ref('password'), null], 'Нууц үг таарахгүй байна'),
 });

@@ -234,3 +234,18 @@ export const GET_ORDERS = gql`
   ${ORDER_ITEM_FIELDS}
   ${TRANSACTION_FIELDS}
 `;
+
+export const GET_ORDER_ZONES = gql`
+  query getOrderZones($id: ID!) {
+    getOrderZones(id: $id) {
+      id
+      name
+      type
+      priority
+      polygons {
+        lat
+        lng
+      }
+    }
+  }
+`;
