@@ -14,6 +14,8 @@ type Props = {
   order: IOrder;
   control: Control<any, any>;
   name: string;
+  goMap: () => void;
+  showFallbackMap: boolean;
   setValue: UseFormSetValue<FieldValues>;
   selectedLocation?: google.maps.LatLngLiteral | null;
   setSelectedLocation: (location: google.maps.LatLngLiteral | null) => void;
@@ -39,6 +41,8 @@ const Index = ({
   showLocatioin,
   setSelectedLocation,
   inputMode,
+  showFallbackMap,
+  goMap,
 }: Props) => {
   const [locations, setLocations] = useState([]);
   const [isRecommended, setIsRecommended] = useState(false);
@@ -127,6 +131,13 @@ const Index = ({
               </div>
 
               <p className="mt-2 mb-2 text-red-500 text-xs">{errors && (errors[name] as FieldError)?.message}</p>
+              {showFallbackMap && (
+                <div className="grid w-full">
+                  <span className="p-4 text-center  text-white rounded-lg bg-red-500 " onClick={goMap}>
+                    Газрийн зургаас оруулах
+                  </span>
+                </div>
+              )}
               {order?.charges
                 ?.filter((c) => c.state === 'A')
                 ?.map((item, index) => (

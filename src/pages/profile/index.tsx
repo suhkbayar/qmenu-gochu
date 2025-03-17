@@ -81,76 +81,76 @@ const Index = () => {
               )}
             </div>
           </div>
-          <h2 className="text-xl font-semibold text-center mb-2">{data && data.me?.firstName}</h2>
-          <p className="text-gray-500 text-center mb-2 dark:text-white">{data && data.me?.phone}</p>
+          <h2 className="text-xl font-semibold text-gray-500 text-center mb-2">{data && data.me?.firstName}</h2>
+          <p className="text-gray-500 text-center mb-2 ">{data && data.me?.phone}</p>
 
           <div className=" p-3 md:flex md:justify-center">
             <ul className="  space-y-2">
-              <div className="flex cursor-pointer hover:bg-gainsboro dark:hover:bg-gray1 items-center rounded-lg  place-content-between p-2">
+              <div className="flex cursor-pointer hover:bg-gainsboro  items-center rounded-lg  place-content-between p-2">
                 <div className="flex place-content-between">
                   <img src={userInfo.src} alt={userInfo.src} className="h-7 w-7 text-gray-400 mr-2" />
-                  <span className="text-gray-700 dark:text-white">{t('mainPage.CustomerInformation')}</span>
+                  <span className="text-gray-700 ">{t('mainPage.CustomerInformation')}</span>
                 </div>
-                <FiChevronRight className="text-gray-500 text-xl dark:text-white" />
+                <FiChevronRight className="text-gray-500 text-xl " />
               </div>
 
-              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg dark:hover:bg-gray1 items-center place-content-between p-2">
+              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2">
                 <div className="flex place-content-between">
                   <img src={heart.src} className="h-7 w-7 text-gray-400 mr-2" />
-                  <span className="text-gray-700 dark:text-white">{t('mainPage.MyFavorite')}</span>
+                  <span className="text-gray-700 ">{t('mainPage.MyFavorite')}</span>
                 </div>
-                <FiChevronRight className="text-gray-500 text-xl dark:text-white" />
+                <FiChevronRight className="text-gray-500 text-xl " />
               </div>
 
-              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg dark:hover:bg-gray1  items-center place-content-between p-2">
+              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg   items-center place-content-between p-2">
                 <div className="flex place-content-between">
                   <img src={discount.src} className="h-7 w-7 text-gray-400 mr-2" />
-                  <span className="text-gray-700 dark:text-white">{t('mainPage.DiscountCards')}</span>
+                  <span className="text-gray-700 ">{t('mainPage.DiscountCards')}</span>
                 </div>
-                <FiChevronRight className="text-gray-500 text-xl dark:text-white" />
+                <FiChevronRight className="text-gray-500 text-xl " />
               </div>
 
-              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg dark:hover:bg-gray1 items-center place-content-between p-2">
+              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2">
                 <div className="flex place-content-between">
                   <img src={Basket.src} className="h-7 w-7 text-gray-400 mr-2" />
-                  <span className="text-gray-700 dark:text-white">Миний сагс</span>
+                  <span className="text-gray-700 ">Миний сагс</span>
                 </div>
-                <FiChevronRight className="text-gray-500 text-xl dark:text-white" />
+                <FiChevronRight className="text-gray-500 text-xl " />
               </div>
 
-              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg dark:hover:bg-gray1 items-center place-content-between p-2">
+              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2">
                 <div className="flex place-content-between">
                   <img src={bonus.src} className="h-7 w-7 text-gray-400 mr-2" />
-                  <span className="text-gray-700 dark:text-white">Урамшуулал </span>
+                  <span className="text-gray-700 ">Урамшуулал </span>
                 </div>
-                <FiChevronRight className="text-gray-500 text-xl dark:text-white" />
+                <FiChevronRight className="text-gray-500 text-xl " />
               </div>
 
-              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg dark:hover:bg-gray1 items-center place-content-between p-2">
+              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2">
                 <div className="flex place-content-between">
                   <img src={Calories.src} className="h-7 w-7 text-gray-400 mr-2" />
-                  <span className="text-gray-700 dark:text-white">{t('mainPage.GiftCoupon')}</span>
+                  <span className="text-gray-700 ">{t('mainPage.GiftCoupon')}</span>
                 </div>
-                <FiChevronRight className="text-gray-500 text-xl dark:text-white" />
+                <FiChevronRight className="text-gray-500 text-xl " />
               </div>
 
-              <div className="flex  cursor-pointer hover:bg-gainsboro rounded-lg dark:hover:bg-gray1 items-center place-content-between p-2">
+              <div className="flex  cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2">
                 <div className="flex place-content-between">
                   <img src={Camera.src} className="h-7 w-7 text-gray-400 mr-2" />
-                  <span className="text-gray-700 dark:text-white ">{t('mainPage.ShareWithOthers')}</span>
+                  <span className="text-gray-700  ">{t('mainPage.ShareWithOthers')}</span>
                 </div>
-                <FiChevronRight className="text-gray-500 text-xl dark:text-white" />
+                <FiChevronRight className="text-gray-500 text-xl " />
               </div>
 
               <div
                 onClick={() => onLogout()}
-                className="flex cursor-pointer hover:bg-gainsboro rounded-lg dark:hover:bg-gray1 items-center place-content-between p-2"
+                className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2"
               >
                 <div className="flex place-content-between">
                   <img src={logout.src} className="h-7 w-7 text-gray-400 mr-2" />
-                  <span className="text-gray-700 dark:text-white">{t('mainPage.Signout')}</span>
+                  <span className="text-gray-700 ">{t('mainPage.Signout')}</span>
                 </div>
-                <FiChevronRight className="text-gray-500 text-xl dark:text-white" />
+                <FiChevronRight className="text-gray-500 text-xl " />
               </div>
             </ul>
           </div>

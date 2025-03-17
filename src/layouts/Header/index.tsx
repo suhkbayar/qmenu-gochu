@@ -96,7 +96,7 @@ const Header: React.FC<Props> = ({ isBack }) => {
               alt="Gochu Logo"
             />
             <span className="self-center text-xl border-gray-800 font-semibold whitespace-nowrap dark:text-white">
-              {order?.type === TYPE.TAKE_AWAY ? selectedParticipant?.branch.name : participant?.branch.name}
+              {order?.type === TYPE.TAKE_AWAY ? selectedParticipant?.branch.name : 'Онлайн захиалга'}
             </span>
           </div>
           <button

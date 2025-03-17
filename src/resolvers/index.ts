@@ -7,8 +7,11 @@ export const userSchema = (order) =>
     phone: yup.string().required('Та утасны дугаар оруулна уу').matches(PATTERN_PHONE, 'Утасны дугаар алдаатай байна'),
     userName: yup.string().required('Та өөрийн нэр оруулна уу'),
     location: order?.type === TYPE.TAKE_AWAY ? yup.string().notRequired() : yup.string().required('Та хаяг оруулна уу'),
-    comment: yup.string().required('Та дэлгэрэнгүй мэдээлэл оруулна уу'),
   });
+
+export const detailSchema = yup.object().shape({
+  comment: yup.string().required('Та дэлгэрэнгүй мэдээлэл оруулна уу'),
+});
 
 export const loginSchema = yup.object().shape({
   phone: yup.string().required('Та утасны дугаар оруулна уу').matches(PATTERN_PHONE, 'Утасны дугаар алдаатай байна'),

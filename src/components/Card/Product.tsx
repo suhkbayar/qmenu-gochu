@@ -84,7 +84,12 @@ const Index = ({ product, orderItem }: Props) => {
             />
           </div>
           <div className="m-4  mt-0 mb-0">
-            <h2 className="line-clamp-2 md:text-lg content-center h-9 md:h-12 leading-4 md:leading-tight font-bold  dark:text-gray-400 text-sm text-misty">
+            <h2
+              style={{
+                alignContent: 'center',
+              }}
+              className="line-clamp-2 flex items-center md:text-lg content-center h-9 md:h-12 leading-4 md:leading-tight font-bold  dark:text-gray-400 text-sm text-misty"
+            >
               <Translate>{product.name} </Translate>
             </h2>
             {/* <span className="line-clamp-2  mb-1 dark:text-gray-400  leading-[15px] h-[31px] text-gray-500 text-sm  ">

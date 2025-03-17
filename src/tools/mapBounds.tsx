@@ -60,6 +60,6 @@ export const calculateHardBounds = (
 };
 
 export const fallbackCenter = {
-  lat: 47.9024278,
-  lng: 106.9386946,
+  lat: 47.9153187,
+  lng: 106.8977819,
 };

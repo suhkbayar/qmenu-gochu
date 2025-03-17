@@ -6,6 +6,8 @@ import { GroupedVirtuoso } from 'react-virtuoso';
 import { DraftOrder, ProductCard } from '../components';
 import { Icons } from '../assets/category/icons';
 
+const filterProducts = ['61333c69-941c-4530-951b-dd3ffd68be80', '58cc52f9-521c-48fd-be7b-b1329c81747c'];
+
 const FoodContent = () => {
   const { participant, order } = useCallStore();
   const virtuoso = useRef(null);
@@ -27,7 +29,9 @@ const FoodContent = () => {
   }, [participant]);
 
   const renderProducts = (products: any) => {
-    return products?.map((product: any) => (
+    const filteredProducts = products?.filter((product) => !filterProducts.includes(product.id));
+
+    return filteredProducts?.map((product: any) => (
       <div key={product.name} className="grid">
         <ProductCard
           key={product.id}

@@ -13,6 +13,8 @@ import { ME } from '../../graphql/query';
 import { useNotificationContext } from '../../providers/notification';
 import { NotificationActionType } from '../../constants/constant';
 import validateLogin from '../../assets/user/login.svg';
+import { useState } from 'react';
+import MinAmoiuntWarning from './MinAmountWarning';
 
 type Props = {
   visible: boolean;
@@ -25,6 +27,7 @@ const DraftModal = ({ visible, onClose }: Props) => {
   const { t } = useTranslation('language');
   const { showCustomNotification } = useNotificationContext();
   const { order, remove, participant } = useCallStore();
+  const [visibleMinAmount, setVisibleMinAmount] = useState(false);
 
   const role = getPayload()?.role;
 
@@ -39,7 +42,13 @@ const DraftModal = ({ visible, onClose }: Props) => {
   const goDelivery = () => {
     if (order?.items.length === 0) return;
     if (!isEmpty(userData?.me)) {
-      router.push(`/delivery-type?id=${id}`);
+      let totalAmount = order?.items?.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 1), 0) || 0;
+
+      if (totalAmount < 35000) {
+        setVisibleMinAmount(true);
+      } else {
+        router.push(`/delivery-type?id=${id}`);
+      }
     } else {
       showCustomNotification(
         <div>
@@ -126,6 +135,13 @@ const DraftModal = ({ visible, onClose }: Props) => {
           </div>
         </Modal.Footer>
       </div>
+      <MinAmoiuntWarning
+        onClose={() => {
+          setVisibleMinAmount(false);
+          onClose();
+        }}
+        visible={visibleMinAmount}
+      />
     </Modal>
   );
 };

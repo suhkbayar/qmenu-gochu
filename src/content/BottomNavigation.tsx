@@ -10,11 +10,13 @@ import { DraftModal } from '../components';
 import { FiUser } from 'react-icons/fi';
 import { useQuery } from '@apollo/client';
 import { GET_ORDERS, ME } from '../graphql/query';
+import MinAmoiuntWarning from '../components/Modal/MinAmountWarning';
 
 const BottonNavigation = () => {
   const router = useRouter();
   const { order, setUser, participant } = useCallStore();
   const [visible, setVisible] = useState(false);
+  const [visibleMinAmount, setVisibleMinAmount] = useState(false);
   const role = getPayload()?.role;
   const { data: orders } = useQuery(GET_ORDERS);
 
@@ -31,7 +33,12 @@ const BottonNavigation = () => {
 
   const goHome = () => {
     if (router.pathname === '/branch') {
-      setVisible(true);
+      let totalAmount = order?.items?.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 1), 0) || 0;
+      if (totalAmount < 35000) {
+        setVisibleMinAmount(true);
+      } else {
+        setVisible(true);
+      }
     } else {
       router.push(`branch?id=${participant.id}`);
     }
@@ -92,6 +99,7 @@ const BottonNavigation = () => {
         </div>
       </div>
       <DraftModal visible={visible} onClose={() => setVisible(false)} />
+      <MinAmoiuntWarning onClose={() => setVisibleMinAmount(false)} visible={visibleMinAmount} />
     </>
   );
 };

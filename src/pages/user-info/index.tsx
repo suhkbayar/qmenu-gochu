@@ -1,11 +1,4 @@
-import {
-  AddLocationModal,
-  ControlledInput,
-  ControlledLocation,
-  ControlledTextArea,
-  Loader,
-  Step,
-} from '../../components';
+import { AddLocationModal, ControlledLocation, Loader, Step } from '../../components';
 import { useRouter } from 'next/router';
 import { FieldValues, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -30,7 +23,7 @@ const Index = () => {
   const { t } = useTranslation('language');
   const [visibleLocation, setVisibleLocation] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<google.maps.LatLngLiteral | null>(null);
-  const { control, handleSubmit, setValue, watch } = useForm<FieldValues>({
+  const { control, handleSubmit, setValue, watch, setError, clearErrors } = useForm<FieldValues>({
     mode: 'all',
     resolver: yupResolver(userSchema(order)) as any,
   });
@@ -43,6 +36,7 @@ const Index = () => {
   const [isFallBack, setIsFallBack] = useState(false);
 
   const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
+  const [showFallbackMap, setShowFallbackMap] = useState(false);
 
   const [calculateDeliveryZone, { loading: calculating }] = useMutation(CALCULATE_DELIVERY_ZONE, {
     onCompleted: (data) => {
@@ -100,17 +94,32 @@ const Index = () => {
   const onSubmit = (data: FieldValues) => {
     load({
       ...order,
-      ...{ id: createOrderId, address: order.type === TYPE.TAKE_AWAY ? null : data.location, comment: data.comment },
+      ...{ id: createOrderId, address: order.type === TYPE.TAKE_AWAY ? null : data.location },
     });
-    if (orderId) {
-      router.push(`/payment?id=${orderId}`);
-    } else {
-      const targetRoute = participant.vat ? `/vat?id=${createOrderId}` : `/payment?id=${createOrderId}`;
 
-      if (order.type === TYPE.TAKE_AWAY) {
-        router.push(targetRoute);
-      } else if (!isEmpty(selectedOrder?.charges?.filter((c) => c.state === 'A'))) {
-        router.push(targetRoute);
+    if (!isEmpty(selectedOrder)) {
+      let charges = selectedOrder?.charges?.filter((c) => c.state === 'A');
+
+      if (isEmpty(charges) && order.type === TYPE.DELIVERY) {
+        setError('location', {
+          type: 'manual',
+          message: 'Та газрын зурагаас хаягаа сонгоно уу.',
+        });
+
+        setShowFallbackMap(true);
+      } else {
+        setShowFallbackMap(false);
+        if (orderId) {
+          router.push(`/payment?id=${orderId}`);
+        } else {
+          const targetRoute = participant.vat ? `/vat?id=${createOrderId}` : `/payment?id=${createOrderId}`;
+
+          if (order.type === TYPE.TAKE_AWAY) {
+            router.push(targetRoute);
+          } else if (!isEmpty(selectedOrder?.charges?.filter((c) => c.state === 'A'))) {
+            router.push(targetRoute);
+          }
+        }
       }
     }
   };
@@ -134,23 +143,6 @@ const Index = () => {
         </div>
 
         <form className="w-full grid gap-4 mt-4 px-4">
-          {/* <ControlledInput
-            control={control}
-            text="Хэрэглэгчийн нэр"
-            name="userName"
-            disabled
-            inputMode="numeric"
-            type="text"
-          />
-
-          <ControlledInput control={control} disabled text="Хэрэглэгчийн утас" name="phone" type="text" /> */}
-
-          <ControlledTextArea
-            control={control}
-            name="comment"
-            placeholder="Орц, хаалга, код гэх мэт бусад нэмэлт мэдээллийг энд бичнэ үү."
-            text="Дэлгэрэнгүй мэдээлэл"
-          />
           {isEmpty(selectedLocation) ? (
             <div className="grid w-full">
               <p style={{ color: 'red' }}>Error: {error?.message}</p>
@@ -170,6 +162,9 @@ const Index = () => {
                   text="Хаяг оруулах"
                   setValue={setValue}
                   name="location"
+                  showFallbackMap={showFallbackMap}
+                  goMap={goMap}
+                  placeholder="Хаяг хайх"
                   type="text"
                   showLocatioin={() => {
                     setIsFallBack(true);
@@ -190,23 +185,40 @@ const Index = () => {
             <div onClick={() => goBack()} className="flex p-4 rounded-lg bg-gray-300 px-6 ">
               <span className="text-white">Буцах</span>
             </div>
-            <button
-              onClick={handleSubmit(onSubmit)}
-              className={`flex gap-4  font-semibold cursor-pointer place-content-center items-center rounded-lg ${
-                isEmpty(order?.type === TYPE.TAKE_AWAY ? phone && userName : phone && userName && location)
-                  ? 'bg-gray-300 text-gray-500'
-                  : 'bg-current text-white'
-              } px-4 py-4 text-sm`}
-            >
-              <span>{t('mainPage.ToBeContinued')}</span>
-              {order?.items.length > 0 && (
-                <>
-                  <span className="block text-white text-md font-semibold">
-                    ( {selectedOrder?.grandTotal.toLocaleString()} {CURRENCY} )
-                  </span>
-                </>
-              )}
-            </button>
+
+            {order?.type === TYPE.TAKE_AWAY ? (
+              <button
+                onClick={handleSubmit(onSubmit)}
+                className={`flex gap-4  font-semibold cursor-pointer place-content-center items-center rounded-lg ${
+                  isEmpty(phone && userName) ? 'bg-gray-300 text-gray-500' : 'bg-current text-white'
+                } px-4 py-4 text-sm`}
+              >
+                <span>{t('mainPage.ToBeContinued')}</span>
+                {order?.items.length > 0 && (
+                  <>
+                    <span className="block text-white text-md font-semibold">
+                      ( {selectedOrder?.grandTotal.toLocaleString()} {CURRENCY} )
+                    </span>
+                  </>
+                )}
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmit(onSubmit)}
+                className={`flex gap-4  font-semibold cursor-pointer place-content-center items-center rounded-lg ${
+                  isEmpty(location) ? 'bg-gray-300 text-gray-500' : 'bg-current text-white'
+                } px-4 py-4 text-sm`}
+              >
+                <span>{t('mainPage.ToBeContinued')}</span>
+                {order?.items.length > 0 && (
+                  <>
+                    <span className="block text-white text-md font-semibold">
+                      ( {selectedOrder?.grandTotal.toLocaleString()} {CURRENCY} )
+                    </span>
+                  </>
+                )}
+              </button>
+            )}
           </div>
         </div>
       </div>
@@ -217,8 +229,11 @@ const Index = () => {
           isFallBack={isFallBack}
           setIsFallBack={setIsFallBack}
           order={selectedOrder}
-          orderId={createOrderId}
+          showFallbackMap={showFallbackMap}
+          orderId={createOrderId || orderId}
           setValue={setValue}
+          clearErrors={clearErrors}
+          setShowFallbackMap={setShowFallbackMap}
           name="location"
           currentLoaction={selectedLocation}
           orderLocation={location}

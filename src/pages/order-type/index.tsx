@@ -74,7 +74,7 @@ const OrderType = () => {
             {t('mainPage.FastDelivery')}
           </span>
         </div>
-        <div
+        {/* <div
           onClick={() => handleOrderType(TYPE.TAKE_AWAY)}
           className=" grid  p-4 sm:p-10  justify-items-center place-items-center bg-macDonald shadow-lg rounded-xl hover:shadow-lg cursor-pointer"
         >
@@ -84,7 +84,7 @@ const OrderType = () => {
           <span className="text-sm sm:text-lg mt-2 flex justify-center w-24 font-semibold text-gray-700">
             {t('mainPage.TakeAway')}
           </span>
-        </div>
+        </div> */}
       </div>
 
       <BranchesModal visible={visible} onClose={() => setVisible(false)} />

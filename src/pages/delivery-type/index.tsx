@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { BusyConfirm, Loader, Step } from '../../components';
+import { BusyConfirm, ControlledTextArea, Loader, Step } from '../../components';
 import { useTranslation } from 'react-i18next';
 import { useCallStore } from '../../contexts/call.store';
 import { CURRENCY } from '../../constants/currency';
@@ -11,6 +11,9 @@ import { CREATE_ORDER } from '../../graphql/mutation/order';
 import { IOrder } from '../../types';
 import { GET_ORDERS } from '../../graphql/query';
 import { TYPE } from '../../constants/constant';
+import { FieldValues, useForm } from 'react-hook-form';
+import { detailSchema } from '../../resolvers';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 const Index = () => {
   const router = useRouter();
@@ -35,17 +38,29 @@ const Index = () => {
       }
     },
     onCompleted: (data) => {
-      if (orderId) {
-        router.push(`/payment?id=${data.createOrder.id}`);
-      } else {
-        router.push(`/user-info?id=${id}&createOrderId=${data.createOrder.id}`);
-      }
+      router.push(`/user-info?id=${id}&createOrderId=${data.createOrder.id}`);
     },
     onError(err) {},
   });
 
+  const { control, handleSubmit, setValue, watch, setError, clearErrors } = useForm<FieldValues>({
+    mode: 'all',
+    resolver: yupResolver(detailSchema) as any,
+  });
+
+  const { comment } = watch();
+
   const onConfirmBusy = () => {
     let DeliveryDate = '';
+
+    if (isEmpty(comment)) {
+      setError('comment', {
+        type: 'manual',
+        message: 'Та дэлгэрэнгүй мэдээлэл оруулна уу',
+      });
+
+      return null;
+    }
 
     if (!isEmpty(selectedDate)) {
       if (isEmpty(selectedTime)) return;
@@ -68,44 +83,36 @@ const Index = () => {
       })),
     }));
 
-    if (orderId) {
-      createOrder({
-        variables: {
-          participant: id,
-          input: {
-            type: order?.type,
-            items: items,
-            deliveryDate: DeliveryDate,
-            contact: user?.phone || '',
-            address: order?.address || '',
-            name: user?.firstName || '',
-            comment: order?.comment || '',
-            guests: 1,
-          },
+    createOrder({
+      variables: {
+        participant: id,
+        input: {
+          type: order?.type,
+          items: items,
+          deliveryDate: DeliveryDate,
+          contact: user?.phone || '',
+          name: user?.firstName || '',
+          comment: comment,
+          channelId: order.type === TYPE.TAKE_AWAY ? selectedParticipant?.id : null,
+          guests: 1,
         },
-      });
-    } else {
-      createOrder({
-        variables: {
-          participant: id,
-          input: {
-            type: order?.type,
-            items: items,
-            deliveryDate: DeliveryDate,
-            contact: user?.phone || '',
-            name: user?.firstName || '',
-            channelId: order.type === TYPE.TAKE_AWAY ? selectedParticipant?.id : null,
-            guests: 1,
-          },
-        },
-      });
-    }
+      },
+    });
 
     load({ ...order, deliveryDate: DeliveryDate });
   };
 
   const navigateToUserInfo = () => {
     let DeliveryDate = '';
+
+    if (isEmpty(comment)) {
+      setError('comment', {
+        type: 'manual',
+        message: 'Та дэлгэрэнгүй мэдээлэл оруулна уу',
+      });
+
+      return null;
+    }
 
     if (!isEmpty(selectedDate)) {
       if (isEmpty(selectedTime)) return;
@@ -138,39 +145,21 @@ const Index = () => {
       })),
     }));
 
-    if (orderId) {
-      createOrder({
-        variables: {
-          participant: id,
-          input: {
-            type: order?.type,
-            items: items,
-            deliveryDate: DeliveryDate,
-            contact: user?.phone || '',
-            address: order?.address || '',
-            name: user?.firstName || '',
-            comment: order?.comment || '',
-            channelId: order.type === TYPE.TAKE_AWAY ? selectedParticipant?.id : null,
-            guests: 1,
-          },
+    createOrder({
+      variables: {
+        participant: id,
+        input: {
+          type: order?.type,
+          items: items,
+          deliveryDate: DeliveryDate,
+          contact: user?.phone || '',
+          comment: comment,
+          name: user?.firstName || '',
+          channelId: order.type === TYPE.TAKE_AWAY ? selectedParticipant?.id : null,
+          guests: 1,
         },
-      });
-    } else {
-      createOrder({
-        variables: {
-          participant: id,
-          input: {
-            type: order?.type,
-            items: items,
-            deliveryDate: DeliveryDate,
-            contact: user?.phone || '',
-            name: user?.firstName || '',
-            channelId: order.type === TYPE.TAKE_AWAY ? selectedParticipant?.id : null,
-            guests: 1,
-          },
-        },
-      });
-    }
+      },
+    });
 
     load({ ...order, deliveryDate: DeliveryDate });
   };
@@ -198,40 +187,54 @@ const Index = () => {
     const generateTimes = () => {
       const newTimes = [];
       const now = new Date();
+      // const now = new Date('2025-03-13T00:08:00');
       const isToday = selectedDate === 'Today';
-      const startHour = isToday ? now.getHours() : 8; // Start time depends on whether it's today or not
+
+      // Always start at 12 PM (noon)
+      const startHour = 12;
+
+      const currentHour = now.getHours();
       const currentMinute = now.getMinutes();
 
       for (let hour = startHour; hour < 24; hour++) {
         const interval = hour >= 17 && hour < 21 ? 120 : 60; // 2-hour intervals for 17:00-21:00
 
-        // Start minute adjusts for the current time if today
-        for (
-          let minute = hour === startHour && isToday && currentMinute > 0 ? (currentMinute > 0 ? 60 : 0) : 0;
-          minute < 60;
-          minute += interval
-        ) {
-          const startTime = new Date();
-          startTime.setHours(hour, minute, 0);
+        // Skip past hours on today's date
+        if (isToday && hour < currentHour && currentHour >= startHour) {
+          continue;
+        }
 
+        // For the current hour, start from the next available time slot
+        let startMinute = 0;
+        if (isToday && hour === currentHour && currentHour >= startHour) {
+          // Round up to next interval
+          startMinute = Math.ceil(currentMinute / interval) * interval;
+          if (startMinute >= 60) continue; // Skip this hour if we've passed all intervals
+        }
+
+        for (let minute = startMinute; minute < 60; minute += interval) {
+          const startTime = new Date(now);
+          startTime.setHours(hour, minute, 0);
           const endTime = new Date(startTime);
           endTime.setMinutes(startTime.getMinutes() + interval);
 
-          if (endTime.getHours() > 23) break; // Prevent intervals exceeding the day
+          if (endTime.getHours() >= 24) break; // Prevent intervals exceeding the day
 
+          // Format without AM/PM
           newTimes.push(
             `${startTime.toLocaleTimeString('en-US', {
-              hour: '2-digit',
+              hour: 'numeric',
               minute: '2-digit',
-              hourCycle: 'h23',
+              hour12: false,
             })} - ${endTime.toLocaleTimeString('en-US', {
-              hour: '2-digit',
+              hour: 'numeric',
               minute: '2-digit',
-              hourCycle: 'h23',
+              hour12: false,
             })}`,
           );
         }
       }
+
       setTimes(newTimes);
     };
 
@@ -318,12 +321,21 @@ const Index = () => {
           {/* Section Title */}
           <div className=" flex gap-4 items-center w-full mt-4 px-4">
             <span className="text-lg text-primary font-semibold">
-              {order?.type === TYPE.TAKE_AWAY ? 'Авч явах цаг' : 'Хүргэх сонголтууд'}
+              {order?.type === TYPE.TAKE_AWAY ? 'Авч явах цаг' : 'Дэлгэрэнгүй мэдээлэл'}
             </span>
           </div>
 
-          {/* Delivery Options */}
           <div className="w-full grid gap-4 mt-2 px-4">
+            <ControlledTextArea
+              control={control}
+              name="comment"
+              placeholder="Орц, хаалга, код гэх мэт бусад нэмэлт мэдээллийг энд бичнэ үү."
+              // text="Дэлгэрэнгүй мэдээлэл"
+            />
+          </div>
+
+          {/* Delivery Options */}
+          <div className="w-full grid gap-2 mt-2 px-4">
             <div className="flex space-x-2 overflow-x-auto mb-4">
               {dates.map((item) => (
                 <button
@@ -366,24 +378,6 @@ const Index = () => {
 
           {/* Footer */}
           <div className=" fixed z-40 bg-white cursor-pointer bottom-0 p-4 sm:bottom-0 transition-all duration-500  md:bottom-5 lg:bottom-5 w-full   sm:w-full md:w-6/12 lg:w-6/12 xl:w-4/12 2xl:w-4/12">
-            {/* {(selectedDate === 'Today' || selectedDate === '') && (
-              <div
-                key="asap"
-                className={`flex items-center p-3 border rounded-lg cursor-pointer mb-4 ${
-                  selectedTime === 'ASAP' ? 'border-current bg-gray-100' : 'border-gray-300'
-                }`}
-                onClick={() => onSelectTime('ASAP')}
-              >
-                <span className="flex-1 text-sm">Яаралтай</span>
-                <input
-                  type="radio"
-                  name="time-selection"
-                  checked={selectedTime === 'ASAP'}
-                  onChange={() => onSelectTime('ASAP')}
-                  className="form-radio text-current"
-                />
-              </div>
-            )} */}
             <div className="w-full flex justify-between text-sm place-items-center">
               <div
                 onClick={() => goBack()}

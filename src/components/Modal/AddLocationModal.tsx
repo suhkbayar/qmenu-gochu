@@ -15,7 +15,7 @@ import toLocation from '../../assets/delivery/to_location.svg';
 import { BsFillInfoCircleFill } from 'react-icons/bs';
 import { CALCULATE_DELIVERY_ZONE } from '../../graphql/mutation/order';
 import { IOrder } from '../../types';
-import { FieldValues, UseFormSetValue } from 'react-hook-form';
+import { FieldValues, UseFormClearErrors, UseFormSetValue } from 'react-hook-form';
 
 type Props = {
   order: IOrder;
@@ -27,6 +27,9 @@ type Props = {
   setValue: UseFormSetValue<FieldValues>;
   orderId: any;
   visible: boolean;
+  setShowFallbackMap: (showFallbackMap: boolean) => void;
+  clearErrors: UseFormClearErrors<FieldValues>;
+  showFallbackMap: boolean;
   onClose: () => void;
   onConfirm: (data: any) => void;
   setSelectedOrder: (order: IOrder) => void;
@@ -45,8 +48,11 @@ const AddLocationModal = ({
   visible,
   onClose,
   onConfirm,
+  clearErrors,
   currentLoaction,
   setSelectedOrder,
+  showFallbackMap,
+  setShowFallbackMap,
   isFallBack,
   setIsFallBack,
   order,
@@ -77,6 +83,13 @@ const AddLocationModal = ({
   const [calculateDeliveryZone, { loading: calculating }] = useMutation(CALCULATE_DELIVERY_ZONE, {
     onCompleted: (data) => {
       setSelectedOrder(data.calculateDeliveryZone);
+      if (showFallbackMap) {
+        let charges = data.calculateDeliveryZone.charges.filter((c) => c.state === 'A');
+        if (!isEmpty(charges)) {
+          clearErrors('location');
+          setShowFallbackMap(false);
+        }
+      }
     },
   });
 
@@ -87,7 +100,7 @@ const AddLocationModal = ({
         setNearestLocations(locations);
         let address = `${locations[0].address}, ${locations[0].description}`;
         setAddress(address);
-        setValue(name, address);
+        // setValue(name, address);
       }
     },
   });
@@ -133,36 +146,6 @@ const AddLocationModal = ({
       setIsDelivery(false);
     }
   }, [isFallBack, center]);
-
-  // useEffect(() => {
-  //   if (!visible) return;
-  //   if (navigator.geolocation) {
-  //     navigator.geolocation.getCurrentPosition(
-  //       (position) => {
-  //         const userLocation = {
-  //           lat: position.coords.latitude,
-  //           lng: position.coords.longitude,
-  //         };
-  //         setCenter(userLocation);
-  //         getNearestLocations({
-  //           variables: {
-  //             lat: position.coords.latitude,
-  //             lon: position.coords.longitude,
-  //           },
-  //         });
-  //         setIsDelivery(false);
-  //       },
-  //       (error) => {
-  //         console.warn('Error fetching location:', error);
-  //         // setCenter(fallbackCenter); // Fallback to predefined center
-  //       },
-  //       { enableHighAccuracy: true, timeout: 5000, maximumAge: 0 },
-  //     );
-  //   } else {
-  //     console.warn('Geolocation is not supported by this browser.');
-  //     // setCenter(fallbackCenter);
-  //   }
-  // }, [visible]);
 
   const onLoad = (mapInstance: google.maps.Map) => {
     mapInstance.setCenter(center); // Set map center to user's location
