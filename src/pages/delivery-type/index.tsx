@@ -190,49 +190,37 @@ const Index = () => {
       // const now = new Date('2025-03-13T00:08:00');
       const isToday = selectedDate === 'Today';
 
-      // Always start at 12 PM (noon)
-      const startHour = 12;
+      const intervals = [
+        { start: '12:00', end: '13:00' },
+        { start: '13:00', end: '14:00' },
+        { start: '14:00', end: '15:30' },
+        { start: '15:30', end: '17:00' },
+        { start: '17:00', end: '19:00' },
+        { start: '18:00', end: '20:00' },
+        { start: '19:00', end: '21:00' },
+        { start: '20:00', end: '21:30' },
+        { start: '21:00', end: '22:30' },
+        { start: '22:00', end: '23:00' },
+        { start: '23:00', end: '00:00' },
+      ];
 
-      const currentHour = now.getHours();
-      const currentMinute = now.getMinutes();
+      if (isToday) {
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
 
-      for (let hour = startHour; hour < 24; hour++) {
-        const interval = hour >= 17 && hour < 21 ? 120 : 60; // 2-hour intervals for 17:00-21:00
+        intervals.forEach((interval) => {
+          const [startHour, startMinute] = interval.start.split(':').map(Number);
+          const [endHour, endMinute] = interval.end.split(':').map(Number);
 
-        // Skip past hours on today's date
-        if (isToday && hour < currentHour && currentHour >= startHour) {
-          continue;
-        }
-
-        // For the current hour, start from the next available time slot
-        let startMinute = 0;
-        if (isToday && hour === currentHour && currentHour >= startHour) {
-          // Round up to next interval
-          startMinute = Math.ceil(currentMinute / interval) * interval;
-          if (startMinute >= 60) continue; // Skip this hour if we've passed all intervals
-        }
-
-        for (let minute = startMinute; minute < 60; minute += interval) {
-          const startTime = new Date(now);
-          startTime.setHours(hour, minute, 0);
-          const endTime = new Date(startTime);
-          endTime.setMinutes(startTime.getMinutes() + interval);
-
-          if (endTime.getHours() >= 24) break; // Prevent intervals exceeding the day
-
-          // Format without AM/PM
-          newTimes.push(
-            `${startTime.toLocaleTimeString('en-US', {
-              hour: 'numeric',
-              minute: '2-digit',
-              hour12: false,
-            })} - ${endTime.toLocaleTimeString('en-US', {
-              hour: 'numeric',
-              minute: '2-digit',
-              hour12: false,
-            })}`,
-          );
-        }
+          // Check if the interval is in the future
+          if (startHour > currentHour || (startHour === currentHour && startMinute >= currentMinute)) {
+            newTimes.push(`${interval.start} - ${interval.end}`);
+          }
+        });
+      } else {
+        intervals.forEach((interval) => {
+          newTimes.push(`${interval.start} - ${interval.end}`);
+        });
       }
 
       setTimes(newTimes);
