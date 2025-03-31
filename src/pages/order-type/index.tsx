@@ -16,7 +16,7 @@ const OrderType = () => {
   const router = useRouter();
 
   const { t } = useTranslation('language');
-  const { participant, order, load, setParticipant } = useCallStore();
+  const { participant, order, load, setParticipant, setSelectedParticipant } = useCallStore();
 
   const [getBranch, { data }] = useLazyQuery(GET_BRANCH, {
     pollInterval: 180000,
@@ -24,6 +24,8 @@ const OrderType = () => {
     onCompleted(data) {
       setAccessToken(data.getParticipant.token);
       setParticipant(data.getParticipant);
+      setSelectedParticipant(null);
+      load(emptyOrder);
     },
     onError() {
       router.push('/notfound');
@@ -47,11 +49,11 @@ const OrderType = () => {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       let id = localStorage?.getItem('partnerId');
-      if (id && id !== participant?.id) {
+      if (id) {
         getBranch({ variables: { id: id } });
       }
     }
-  }, [participant]);
+  }, []);
 
   useEffect(() => {
     setIsClient(true);
@@ -61,7 +63,7 @@ const OrderType = () => {
 
   return (
     <div className="h-screen bg-[rgba(254,202,66,0.3)]">
-      <div className="absolute top-0 w-full ">{participant && <Header />}</div>
+      <div className="absolute top-0 w-full ">{participant && <Header isMain />}</div>
       <div className="h-full items-center place-content-center flex gap-10">
         <div
           onClick={() => handleOrderType(TYPE.DELIVERY)}
@@ -74,7 +76,7 @@ const OrderType = () => {
             {t('mainPage.FastDelivery')}
           </span>
         </div>
-        {/* <div
+        <div
           onClick={() => handleOrderType(TYPE.TAKE_AWAY)}
           className=" grid  p-4 sm:p-10  justify-items-center place-items-center bg-macDonald shadow-lg rounded-xl hover:shadow-lg cursor-pointer"
         >
@@ -84,7 +86,7 @@ const OrderType = () => {
           <span className="text-sm sm:text-lg mt-2 flex justify-center w-24 font-semibold text-gray-700">
             {t('mainPage.TakeAway')}
           </span>
-        </div> */}
+        </div>
       </div>
 
       <BranchesModal visible={visible} onClose={() => setVisible(false)} />

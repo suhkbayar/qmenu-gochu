@@ -10,7 +10,7 @@ import { emptyOrder } from '../../mock';
 const Index = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { load } = useCallStore();
+  const { load, setSelectedParticipant } = useCallStore();
   const { authenticate, changeQr } = useContext(AuthContext);
 
   const [getCurrentToken, { loading }] = useMutation(CURRENT_TOKEN, {
@@ -20,6 +20,7 @@ const Index = () => {
       localStorage.setItem('partnerId', id as string);
       router.push(`branch?id=${id}`);
       load(emptyOrder);
+      setSelectedParticipant(null);
     },
     onError(err) {
       // router.push('/notfound');

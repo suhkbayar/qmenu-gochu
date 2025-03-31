@@ -200,7 +200,7 @@ const Index = () => {
                 </div>
 
                 <div className="grid col-span-7">
-                  <span className="content-center text-gray-700 text-sm font-semibold">
+                  <span className="content-center text-gray-700 text-sm font-bold">
                     {data?.getOrder?.type === 'TakeAway' ? 'Авч явах цаг:' : 'Хүргэх хугацаа:'}{' '}
                   </span>
                   <span className="content-center line-clamp-1 text-sm text-gray-700 font-semibold">
@@ -224,7 +224,7 @@ const Index = () => {
                   </div>
 
                   <div className="grid col-span-7">
-                    <span className="content-center text-gray-700 text-sm font-semibold">Хүргүүлэх хаяг: </span>
+                    <span className="content-center text-gray-700 text-sm font-bold">Хүргүүлэх хаяг: </span>
                     <span className="content-center text-sm line-clamp-1 text-gray-700 font-semibold">
                       {data?.getOrder?.address}
                     </span>

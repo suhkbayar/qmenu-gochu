@@ -43,7 +43,6 @@ const DraftModal = ({ visible, onClose }: Props) => {
     if (order?.items.length === 0) return;
     if (!isEmpty(userData?.me)) {
       let totalAmount = order?.items?.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 1), 0) || 0;
-
       if (totalAmount < 35000) {
         setVisibleMinAmount(true);
       } else {

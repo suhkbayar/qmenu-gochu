@@ -56,7 +56,7 @@ const BottonNavigation = () => {
 
   return (
     <>
-      <div className=" fixed   sm:hidden z-20 w-full  h-16 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-t-3xl bottom-0 left-1/2 dark:bg-gray-700 dark:border-gray-600">
+      <div className=" fixed   sm:hidden z-20 w-full  h-16 max-w-lg -translate-x-1/2 bg-white border border-gray-200 rounded-t-3xl bottom-0 left-1/2 ">
         <div className="flex justify-between px-6 items-center h-full max-w-lg mx-auto">
           <div className="flex items-center justify-center w-full h-full" onClick={() => goHome()}>
             <div

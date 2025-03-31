@@ -5,6 +5,7 @@ import { isEmpty, groupBy } from 'lodash';
 import { GroupedVirtuoso } from 'react-virtuoso';
 import { DraftOrder, ProductCard } from '../components';
 import { Icons } from '../assets/category/icons';
+import { TYPE } from '../constants/constant';
 
 const filterProducts = ['61333c69-941c-4530-951b-dd3ffd68be80', '58cc52f9-521c-48fd-be7b-b1329c81747c'];
 
@@ -19,6 +20,7 @@ const FoodContent = () => {
   useEffect(() => {
     if (isEmpty(participant)) return;
     const filteredCategories = participant.menu.categories.filter((category) => {
+      if (order.type === TYPE.TAKE_AWAY && category.id === '3515c1eb-1d9f-4347-9dab-2b9e88aa0aa1') return false;
       const allProductsInactive = category.products.every((product) => product.state !== 'ACTIVE');
       const allChildrenInactive = category.children.every((childCategory) =>
         childCategory.products.every((product) => product.state !== 'ACTIVE'),
@@ -32,7 +34,7 @@ const FoodContent = () => {
     const filteredProducts = products?.filter((product) => !filterProducts.includes(product.id));
 
     return filteredProducts?.map((product: any) => (
-      <div key={product.name} className="grid">
+      <div key={product.id} className="grid">
         <ProductCard
           key={product.id}
           product={product}
@@ -73,18 +75,32 @@ const FoodContent = () => {
   };
   const { groupCounts } = generateGroupedUsers();
 
-  const handleRangeChanged = ({ startIndex }) => {
-    if (isScrolling) {
-      setActiveIndex(startIndex);
+  const getFirstItemIndexes = () => {
+    return groupCounts.reduce(
+      ({ indexes, offset }, count) => {
+        indexes.push(offset);
+        return { indexes, offset: offset + count };
+      },
+      { indexes: [], offset: 0 },
+    ).indexes;
+  };
+
+  const firstItemIndexes = getFirstItemIndexes();
+
+  const handleRangeChanged = ({ startIndex }: { startIndex: number }) => {
+    const newGroupIndex = firstItemIndexes.findIndex((idx) => idx === startIndex);
+    if (newGroupIndex !== -1 && newGroupIndex !== activeIndex) {
+      setActiveIndex(newGroupIndex);
     }
   };
 
-  const onSelectCategory = (index: number) => {
-    virtuoso.current.scrollToIndex({
-      index: index,
-      behavior: 'smooth', // Ensures smooth scrolling
+  const onSelectCategory = (groupIndex: number) => {
+    const itemIndex = firstItemIndexes[groupIndex]; // scroll to first item in that group
+    virtuoso.current?.scrollToIndex({
+      index: itemIndex,
+      behavior: 'smooth',
     });
-    setActiveIndex(index);
+    setActiveIndex(groupIndex);
   };
 
   const onScroll = () => {
@@ -103,7 +119,10 @@ const FoodContent = () => {
   return (
     <section className="grid grid-cols-12">
       <div className="grid   col-span-12 lg:col-span-8 ">
-        <div className="flex sticky top-[76px] bg-white z-10 overflow-x-scroll pl-4 pt-2 pb-2" ref={navRef}>
+        <div
+          className="flex sticky top-[76px] bg-white z-10 overflow-x-auto scrollbar-hide space-x-2 px-4 pt-2 pb-2"
+          ref={navRef}
+        >
           {groupCounts
             .reduce(
               ({ firstItemsIndexes, offset }, count) => {
@@ -120,7 +139,7 @@ const FoodContent = () => {
               return (
                 <div
                   key={itemIndex}
-                  className={`flex w-48  rounded-full px-2  py-2  ${
+                  className={`flex w-48 snap-start rounded-full px-2  py-2  ${
                     activeIndex === itemIndex ? ' bg-current ' : '  '
                   } `}
                 >

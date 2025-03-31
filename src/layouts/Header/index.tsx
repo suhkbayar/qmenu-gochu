@@ -6,14 +6,14 @@ import { getPayload } from '../../providers/auth';
 import { useQuery } from '@apollo/client';
 import { ME } from '../../graphql/query';
 import { isEmpty } from 'lodash';
-import { TYPE } from '../../constants/constant';
 import { IoArrowBack } from 'react-icons/io5';
 
 type Props = {
   isBack?: boolean;
+  isMain?: boolean;
 };
 
-const Header: React.FC<Props> = ({ isBack }) => {
+const Header: React.FC<Props> = ({ isBack, isMain }) => {
   const router = useRouter();
   const { participant, setUser, selectedParticipant, order } = useCallStore();
   const [isOpen, setIsOpen] = useState(false);
@@ -39,7 +39,7 @@ const Header: React.FC<Props> = ({ isBack }) => {
       <li className="border-b-2 border-white">
         <div
           onClick={() => router.push(`branch?id=${participant.id}`)}
-          className="block py-2 my-2 text-md pr-4 pl-3 text-white font-bold lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white"
+          className="block py-2 my-2 text-md pr-4 pl-3 text-white font-bold lg:bg-transparent lg:text-primary-700 lg:p-0 "
           aria-current="page"
         >
           Нүүр
@@ -48,7 +48,7 @@ const Header: React.FC<Props> = ({ isBack }) => {
       <li className="content-center">
         <div
           onClick={() => router.push(`branch-info`)}
-          className="block py-2 text-md pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+          className="block py-2 text-md pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0  "
         >
           Бидний тухай
         </div>
@@ -81,22 +81,24 @@ const Header: React.FC<Props> = ({ isBack }) => {
   );
 
   const goBack = () => {
-    router.push(`/partner?id=${participant.id}`);
+    router.push(`/`);
   };
 
   return (
     <header className="sticky top-0 w-full z-10">
-      <nav className="bg-primary border-gray-200 px-4 lg:px-6 py-2.5 dark:bg-gray-800">
+      <nav className="bg-primary border-gray-200 px-4 lg:px-6 py-2.5 ">
         <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
           <div className="flex items-center">
             {isBack && <IoArrowBack onClick={goBack} className="mr-4 text-2xl text-gray-700" />}
+
             <img
-              src={order?.type === TYPE.TAKE_AWAY ? selectedParticipant?.branch.logo : participant?.branch.logo}
+              src={selectedParticipant?.branch.logo ?? participant?.branch.logo}
               className="mr-3 h-14 rounded-xl"
               alt="Gochu Logo"
             />
+
             <span className="self-center text-xl border-gray-800 font-semibold whitespace-nowrap dark:text-white">
-              {order?.type === TYPE.TAKE_AWAY ? selectedParticipant?.branch.name : 'Онлайн захиалга'}
+              {selectedParticipant?.branch.name ?? 'Онлайн захиалга'}
             </span>
           </div>
           <button

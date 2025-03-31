@@ -2,11 +2,13 @@ import { Modal } from 'flowbite-react';
 import { customThemeDraftModal } from '../../../styles/themes';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'lodash';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_BRANCHES } from '../../graphql/query';
 import { useEffect, useState } from 'react';
 import { useCallStore } from '../../contexts/call.store';
 import { useRouter } from 'next/router';
+import { CURRENT_TOKEN } from '../../graphql/mutation/token';
+import { setAccessToken } from '../../providers/auth';
 
 type Props = {
   visible: boolean;
@@ -17,11 +19,18 @@ const BranchesModal = ({ visible, onClose }: Props) => {
   const router = useRouter();
   const { t } = useTranslation('language');
   const [branches, setBranches] = useState([]);
+  const [selectedBranch, setSelectedBranch] = useState(null);
   const { participant, setSelectedParticipant, selectedParticipant } = useCallStore();
 
   const [getBranches, { data }] = useLazyQuery(GET_BRANCHES, {
     onCompleted: (data) => {
       setBranches(data?.getParticipants);
+    },
+  });
+
+  const [currentToken] = useMutation(CURRENT_TOKEN, {
+    onError: (err) => {
+      router.push('/notfound');
     },
   });
 
@@ -32,9 +41,21 @@ const BranchesModal = ({ visible, onClose }: Props) => {
   }, [visible]);
 
   const goDelivery = () => {
-    if (!isEmpty(participant)) {
-      router.push(`/branch?id=${participant.id}`);
+    if (isEmpty(selectedBranch)) {
+      router.push(`/`);
     }
+
+    setSelectedParticipant(selectedBranch);
+    currentToken({
+      variables: {
+        code: selectedBranch?.id,
+        type: 'K',
+      },
+      onCompleted: (data) => {
+        setAccessToken(data.getToken.token);
+        router.push(`/branch?id=${selectedBranch?.id}`);
+      },
+    });
   };
 
   const onCloseBranchSelect = () => {
@@ -62,10 +83,10 @@ const BranchesModal = ({ visible, onClose }: Props) => {
                 {branches?.map((item: any) => (
                   <div
                     className={`grid grid-cols-6 gap-2 p-2 rounded-lg  bg-gray-100 shadow-sm  border cursor-pointer  ${
-                      selectedParticipant?.id === item?.id ? '  border-current' : ' border-transparent'
+                      selectedBranch?.id === item?.id ? '  border-current' : ' border-transparent'
                     }  `}
                     key={item?.id}
-                    onClick={() => setSelectedParticipant(item)}
+                    onClick={() => setSelectedBranch(item)}
                   >
                     <div className="flex col-span-1 justify-between items-center">
                       <img className=" rounded-md h-12 object-cover bg-center " src={item?.branch?.logo} />
@@ -96,7 +117,7 @@ const BranchesModal = ({ visible, onClose }: Props) => {
             <button
               onClick={() => goDelivery()}
               className={`flex font-semibold cursor-pointer place-content-center items-center rounded-lg  first-line: ${
-                isEmpty(selectedParticipant) ? 'bg-gray-300 text-gray-500' : 'bg-current text-white'
+                isEmpty(selectedBranch) ? 'bg-gray-300 text-gray-500' : 'bg-current text-white'
               } px-4 py-4 text-sm`}
             >
               {t('mainPage.ToBeContinued')}

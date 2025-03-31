@@ -63,7 +63,7 @@ const Index = ({ product, orderItem }: Props) => {
   return (
     <>
       <div key={product.id} className="p-2 ">
-        <div className=" hover:shadow-xl  shadow-lg bg-white  dark:bg-gray-700 rounded-md  rounded-b-2xl ">
+        <div className=" hover:shadow-xl  shadow-lg bg-white   rounded-md  rounded-b-2xl ">
           <div className="relative object-cover rounded-md " onClick={() => setVisible(true)}>
             <Image
               src={isEmpty(product.image) ? fallback.src : product.image}
@@ -88,7 +88,7 @@ const Index = ({ product, orderItem }: Props) => {
               style={{
                 alignContent: 'center',
               }}
-              className="line-clamp-2 flex items-center md:text-lg content-center h-9 md:h-12 leading-4 md:leading-tight font-bold  dark:text-gray-400 text-sm text-misty"
+              className="line-clamp-2 flex items-center md:text-lg content-center h-9 md:h-12 leading-4 md:leading-tight font-bold   text-sm text-misty"
             >
               <Translate>{product.name} </Translate>
             </h2>

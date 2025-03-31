@@ -24,7 +24,7 @@ const Index = ({ control, name, text, placeholder }: Props) => {
               placeholder={placeholder || ''}
               className=" w-full placeholder:text-sm px-4 py-2 text-gray1 transition duration-300 border border-gray-300 rounded-lg focus:border-transparent focus:outline-none focus:ring-1 focus:ring-gray-300"
             />
-            <p className="mt-2 mb-2 text-red-500 text-xs">{errors && (errors[name] as FieldError)?.message}</p>
+            {errors && <p className="mt-2 mb-2 text-red-500 text-xs">{(errors[name] as FieldError)?.message}</p>}
           </div>
         );
       }}

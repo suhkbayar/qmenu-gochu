@@ -14,6 +14,7 @@ import { TYPE } from '../../constants/constant';
 import { FieldValues, useForm } from 'react-hook-form';
 import { detailSchema } from '../../resolvers';
 import { yupResolver } from '@hookform/resolvers/yup';
+import MinAmoiuntWarning from '../../components/Modal/MinAmountWarning';
 
 const Index = () => {
   const router = useRouter();
@@ -26,6 +27,8 @@ const Index = () => {
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [dates, setDates] = useState<{ label: string; date: string }[]>([]);
   const [times, setTimes] = useState<string[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
+  const [visibleMinAmount, setVisibleMinAmount] = useState(false);
 
   const [createOrder, { loading }] = useMutation(CREATE_ORDER, {
     update(cache, { data: { createOrder } }) {
@@ -38,7 +41,15 @@ const Index = () => {
       }
     },
     onCompleted: (data) => {
-      router.push(`/user-info?id=${id}&createOrderId=${data.createOrder.id}`);
+      if (order.type === 'TakeAway') {
+        if (participant.vat) {
+          router.push(`/vat?id=${data.createOrder.id}`);
+        } else {
+          router.push(`/payment?id=${data.createOrder.id}`);
+        }
+      } else {
+        router.push(`/user-info?id=${id}&createOrderId=${data.createOrder.id}`);
+      }
     },
     onError(err) {},
   });
@@ -73,6 +84,14 @@ const Index = () => {
       DeliveryDate = 'ASAP';
     }
 
+    if (order?.type === TYPE.DELIVERY) {
+      let totalAmount = order?.items?.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 1), 0) || 0;
+      if (totalAmount < 35000) {
+        setVisibleMinAmount(true);
+        return null;
+      }
+    }
+
     const items = order.items.map((item) => ({
       id: item.id,
       quantity: item.quantity,
@@ -105,7 +124,7 @@ const Index = () => {
   const navigateToUserInfo = () => {
     let DeliveryDate = '';
 
-    if (isEmpty(comment)) {
+    if (isEmpty(comment) && order.type === TYPE.DELIVERY) {
       setError('comment', {
         type: 'manual',
         message: 'Та дэлгэрэнгүй мэдээлэл оруулна уу',
@@ -135,6 +154,15 @@ const Index = () => {
         return;
       }
     }
+
+    if (order?.type === TYPE.DELIVERY) {
+      let totalAmount = order?.items?.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 1), 0) || 0;
+      if (totalAmount < 35000) {
+        setVisibleMinAmount(true);
+        return null;
+      }
+    }
+
     const items = order.items.map((item) => ({
       id: item.id,
       quantity: item.quantity,
@@ -155,7 +183,6 @@ const Index = () => {
           contact: user?.phone || '',
           comment: comment,
           name: user?.firstName || '',
-          channelId: order.type === TYPE.TAKE_AWAY ? selectedParticipant?.id : null,
           guests: 1,
         },
       },
@@ -180,6 +207,10 @@ const Index = () => {
     };
 
     generateDates();
+  }, []);
+
+  useEffect(() => {
+    setIsMounted(true);
   }, []);
 
   // Generate times based on the selected date
@@ -297,6 +328,8 @@ const Index = () => {
 
   if (loading) return <Loader />;
 
+  if (!isMounted) return <Loader />;
+
   return (
     <>
       <section className="flex w-full justify-center">
@@ -307,20 +340,29 @@ const Index = () => {
           </div>
 
           {/* Section Title */}
+
           <div className=" flex gap-4 items-center w-full mt-4 px-4">
             <span className="text-lg text-primary font-semibold">
               {order?.type === TYPE.TAKE_AWAY ? 'Авч явах цаг' : 'Дэлгэрэнгүй мэдээлэл'}
             </span>
           </div>
 
-          <div className="w-full grid gap-4 mt-2 px-4">
-            <ControlledTextArea
-              control={control}
-              name="comment"
-              placeholder="Орц, хаалга, код гэх мэт бусад нэмэлт мэдээллийг энд бичнэ үү."
-              // text="Дэлгэрэнгүй мэдээлэл"
-            />
-          </div>
+          {order?.type === TYPE.DELIVERY && (
+            <div className="w-full grid gap-4 mt-2 px-4">
+              <ControlledTextArea
+                control={control}
+                name="comment"
+                placeholder="Орц, хаалга, код гэх мэт бусад нэмэлт мэдээллийг энд бичнэ үү."
+                // text="Дэлгэрэнгүй мэдээлэл"
+              />
+            </div>
+          )}
+
+          {order?.type === TYPE.DELIVERY && (
+            <div className=" flex gap-4 items-center w-full mb-4  px-4">
+              <span className="text-lg text-primary font-semibold">{'Хүргүүлэх цаг сонгох'}</span>
+            </div>
+          )}
 
           {/* Delivery Options */}
           <div className="w-full grid gap-2 mt-2 px-4">
@@ -395,6 +437,13 @@ const Index = () => {
           </div>
         </div>
       </section>
+      <MinAmoiuntWarning
+        onClose={() => {
+          setVisibleMinAmount(false);
+          goBack();
+        }}
+        visible={visibleMinAmount}
+      />
       <BusyConfirm visible={isBusy} onClose={() => setIsBusy(false)} onConfirm={onConfirmBusy} />
     </>
   );
