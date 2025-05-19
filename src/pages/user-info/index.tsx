@@ -11,10 +11,10 @@ import { useMutation } from '@apollo/client';
 import { CALCULATE_DELIVERY_ZONE } from '../../graphql/mutation/order';
 import { IOrder } from '../../types';
 import { CURRENCY } from '../../constants/currency';
-import { TYPE } from '../../constants/constant';
+import { approvedPolygons, blockedPolygons, TYPE } from '../../constants/constant';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
 import LocationModal from '../../components/Modal/LocationModal';
-import { fallbackCenter } from '../../tools/mapBounds';
+import { extractTimes, fallbackCenter, isAfterEightThirtyPM, isBetween, isPointInPolygon } from '../../tools/mapBounds';
 
 const Index = () => {
   const router = useRouter();
@@ -33,7 +33,12 @@ const Index = () => {
 
   const [isDelivery, setIsDelivery] = useState(false);
 
+  const [isBlockZone, setIsBlockZone] = useState(false);
+
+  const [isYaarmag, setIsYaarmag] = useState(false);
+
   const [isFallBack, setIsFallBack] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   const [selectedOrder, setSelectedOrder] = useState<IOrder | null>(null);
   const [showFallbackMap, setShowFallbackMap] = useState(false);
@@ -50,6 +55,52 @@ const Index = () => {
   const goBack = () => {
     router.push(`/delivery-type?id=${id}`);
   };
+
+  useEffect(() => {
+    if (selectedLocation) {
+      const targetCategoryId = '3515c1eb-1d9f-4347-9dab-2b9e88aa0aa1';
+
+      const category = participant?.menu?.categories?.find((category) => category.id === targetCategoryId);
+
+      const productsInTargetCategory = category
+        ? [...category.products, ...category.children.flatMap((child) => child.products)]
+        : [];
+
+      let targetVariants = productsInTargetCategory?.flatMap((product) => product.variants);
+
+      let match = order?.items?.filter((item) => {
+        return targetVariants.some((variant) => {
+          return item?.id === variant?.id;
+        });
+      });
+
+      if (!isEmpty(match)) {
+        const isInside = isPointInPolygon(selectedLocation, approvedPolygons);
+        if (!isInside) {
+          setIsBlockZone(true);
+        } else {
+          setIsBlockZone(false);
+        }
+      }
+
+      let deliveryDate = order?.deliveryDate;
+
+      const { start, end } = extractTimes(deliveryDate);
+
+      const isTime = isBetween('20:30', start, end) || isAfterEightThirtyPM(start) || isAfterEightThirtyPM(end);
+
+      if (isTime) {
+        const isInsides = isPointInPolygon(selectedLocation, blockedPolygons);
+        setIsYaarmag(isInsides);
+      } else {
+        setIsYaarmag(false);
+      }
+    }
+  }, [selectedLocation]);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     if (currentLocation) {
@@ -92,6 +143,9 @@ const Index = () => {
   }, [user]);
 
   const onSubmit = (data: FieldValues) => {
+    if (isBlockZone) return null;
+    if (isYaarmag) return null;
+
     load({
       ...order,
       ...{ id: createOrderId, address: order.type === TYPE.TAKE_AWAY ? null : data.location },
@@ -131,6 +185,8 @@ const Index = () => {
 
   if (calculating || loading) return <Loader />;
 
+  if (!isMounted) return <Loader />;
+
   return (
     <section className="flex w-full justify-center">
       <div className="relative w-full h-screen sm:w-3/6 md:w-3/5 lg:w-3/5 xl:w-3/6 2xl:w-2/5">
@@ -155,9 +211,11 @@ const Index = () => {
               {order?.type === TYPE.DELIVERY && (
                 <ControlledLocation
                   order={selectedOrder}
+                  isBlockZone={isBlockZone}
                   setSelectedLocation={setSelectedLocation}
                   setIsDelivery={setIsDelivery}
                   control={control}
+                  isYaarmag={isYaarmag}
                   selectedLocation={selectedLocation}
                   text="Хаяг оруулах"
                   setValue={setValue}

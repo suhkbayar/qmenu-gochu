@@ -19,6 +19,7 @@ export const Banner = dynamic(() => import('../layouts/Banner'));
 
 export const ProductCard = dynamic(() => import('../components/Card/Product'), {
   loading: () => <CardSkelton />,
+  ssr: false,
 });
 
 export const WaitPaymentModal = dynamic(() => import('./Modal/WaitPayment'));

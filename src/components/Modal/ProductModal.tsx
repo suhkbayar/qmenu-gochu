@@ -206,17 +206,11 @@ const Index = ({ onClose, product = {}, visible }: Props) => {
 
   const ImageSection = memo(() => (
     <div className="items-center lg:w-96 flex place-content-center object-cover rounded-md">
-      <Image
+      <img
         alt="product"
         src={isEmpty(product.image) ? fallback.src : product.image}
-        loader={imageLoader}
-        width={500}
-        height={300}
-        placeholder="empty"
-        object-fit="cover"
-        className="rounded-md"
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 20vw, 33vw"
-        priority={true}
+        className="rounded-md w-full h-[300px] object-cover"
+        loading="lazy"
       />
     </div>
   ));
