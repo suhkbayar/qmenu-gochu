@@ -15,6 +15,8 @@ type Props = {
   onClose: () => void;
 };
 
+const filteredBranch = ['1edeb298-61d6-495e-b61e-7d22b16f1f14'];
+
 const BranchesModal = ({ visible, onClose }: Props) => {
   const router = useRouter();
   const { t } = useTranslation('language');
@@ -24,7 +26,7 @@ const BranchesModal = ({ visible, onClose }: Props) => {
 
   const [getBranches, { data }] = useLazyQuery(GET_BRANCHES, {
     onCompleted: (data) => {
-      setBranches(data?.getParticipants);
+      setBranches(data?.getParticipants?.filter((item) => !filteredBranch.includes(item?.id)));
     },
   });
 
@@ -66,65 +68,64 @@ const BranchesModal = ({ visible, onClose }: Props) => {
   return (
     <Modal
       theme={customThemeDraftModal}
-      className={`w-full p-0  `}
+      className={`w-full p-0 `}
       position="center"
       dismissible
       show={visible}
       onClose={onCloseBranchSelect}
     >
-      <div>
-        <Modal.Header className="bg-current ">
-          <span className="text-lg text-white">Салбар сонгох</span>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="h-fit overflow-auto mb-16">
-            {!isEmpty(branches) && (
-              <div className="grid gap-4 ">
-                {branches?.map((item: any) => (
-                  <div
-                    className={`grid grid-cols-6 gap-2 p-2 rounded-lg  bg-gray-100 shadow-sm  border cursor-pointer  ${
-                      selectedBranch?.id === item?.id ? '  border-current' : ' border-transparent'
-                    }  `}
-                    key={item?.id}
-                    onClick={() => setSelectedBranch(item)}
-                  >
-                    <div className="flex col-span-1 justify-between items-center">
-                      <img className=" rounded-md h-12 object-cover bg-center " src={item?.branch?.logo} />
-                    </div>
-
-                    <span className="col-span-3 flex self-center items-center font-semibold text-gray-700">
-                      {item?.branch?.name}
-                    </span>
-                    <div className="col-span-6 h-12   flex self-center items-center font-semibold text-gray-700">
-                      <span className="line-clamp-2">{item?.branch?.address}</span>
-                    </div>
+      <Modal.Header className="bg-current ">
+        <span className="text-lg text-white">Салбар сонгох</span>
+      </Modal.Header>
+      <Modal.Body>
+        <div className="h-fit overflow-auto mb-16">
+          {!isEmpty(branches) && (
+            <div className="grid gap-4 ">
+              {branches?.map((item: any) => (
+                <div
+                  className={`grid grid-cols-6 gap-2 p-2 rounded-lg  bg-gray-100 shadow-sm  border cursor-pointer  ${
+                    selectedBranch?.id === item?.id ? '  border-current' : ' border-transparent'
+                  }  `}
+                  key={item?.id}
+                  onClick={() => setSelectedBranch(item)}
+                >
+                  <div className="flex col-span-1 justify-between items-center">
+                    <img className=" rounded-md h-12 object-cover bg-center " src={item?.branch?.logo} />
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </Modal.Body>
-        <Modal.Footer className="  fixed bg-white bottom-0 w-full space-x-0 p-0">
-          <div className="w-full p-4 flex justify-between text-sm place-items-center">
-            <button
-              onClick={() => onClose()}
-              className={`flex font-semibold cursor-pointer place-content-center items-center rounded-lg  first-line: 
-          bg-gray-300 text-gray-500
-             px-4 py-4 text-sm`}
-            >
-              Буцах
-            </button>
-            <button
-              onClick={() => goDelivery()}
-              className={`flex font-semibold cursor-pointer place-content-center items-center rounded-lg  first-line: ${
-                isEmpty(selectedBranch) ? 'bg-gray-300 text-gray-500' : 'bg-current text-white'
-              } px-4 py-4 text-sm`}
-            >
-              {t('mainPage.ToBeContinued')}
-            </button>
-          </div>
-        </Modal.Footer>
-      </div>
+
+                  <span className="col-span-3 flex self-center items-center font-semibold text-gray-700">
+                    {item?.branch?.name}
+                  </span>
+                  <div className="col-span-6 h-12   flex self-center items-center font-semibold text-gray-700">
+                    <span className="line-clamp-2">{item?.branch?.address}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </Modal.Body>
+      <Modal.Footer className="sticky bottom-0 w-full bg-white border-t border-gray-200 p-4 z-10">
+        <div className="w-full flex justify-between gap-4">
+          <button
+            onClick={onClose}
+            className="w-full py-3 rounded-lg bg-gray-200 text-gray-700 font-semibold hover:bg-gray-300 transition"
+          >
+            Буцах
+          </button>
+          <button
+            onClick={goDelivery}
+            disabled={isEmpty(selectedBranch)}
+            className={`w-full py-3 rounded-lg font-semibold transition ${
+              isEmpty(selectedBranch)
+                ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                : 'bg-current text-white hover:opacity-90'
+            }`}
+          >
+            {t('mainPage.ToBeContinued')}
+          </button>
+        </div>
+      </Modal.Footer>
     </Modal>
   );
 };

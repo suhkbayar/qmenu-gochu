@@ -7,6 +7,7 @@ import { useQuery } from '@apollo/client';
 import { ME } from '../../graphql/query';
 import { isEmpty } from 'lodash';
 import { IoArrowBack } from 'react-icons/io5';
+import logo from '../../assets/images/newQ.png';
 
 type Props = {
   isBack?: boolean;
@@ -35,47 +36,73 @@ const Header: React.FC<Props> = ({ isBack, isMain }) => {
   };
 
   const renderMenu = (
-    <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-      <li className="border-b-2 border-white">
+    <ul className="flex flex-col font-medium lg:flex-row lg:space-x-8">
+      <li className="border-b-2 border-white lg:border-0">
         <div
-          onClick={() => router.push(`branch?id=${participant.id}`)}
-          className="block py-2 my-2 text-md pr-4 pl-3 text-white font-bold lg:bg-transparent lg:text-primary-700 lg:p-0 "
-          aria-current="page"
+          onClick={() => {
+            router.push(`branch?id=${participant.id}`);
+            setIsOpen(false);
+          }}
+          className="block py-2 my-2 text-md pr-4 pl-3 text-white font-bold lg:text-primary-700 lg:p-0"
         >
           Нүүр
         </div>
       </li>
       <li className="content-center">
         <div
-          onClick={() => router.push(`branch-info`)}
-          className="block py-2 text-md pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0  "
+          onClick={() => {
+            router.push(`branch-info`);
+            setIsOpen(false);
+          }}
+          className="block py-2 text-md pr-4 pl-3 text-white font-bold lg:text-primary-700 lg:p-0"
         >
           Бидний тухай
         </div>
       </li>
       <li className="content-center">
         <div
-          onClick={() => router.push(`branch-info`)}
-          className="block py-2 text-md pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+          onClick={() => {
+            router.push(`branch-info`);
+            setIsOpen(false);
+          }}
+          className="block py-2 text-md pr-4 pl-3 text-white font-bold lg:text-primary-700 lg:p-0"
         >
           Цагийн хуваарь
         </div>
       </li>
       <li className="content-center">
         <div
-          onClick={() => router.push(`branch-info`)}
-          className="block py-2 text-md pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
+          onClick={() => {
+            router.push(`branch-info`);
+            setIsOpen(false);
+          }}
+          className="block py-2 text-md pr-4 pl-3 text-white font-bold lg:text-primary-700 lg:p-0"
         >
           Холбоо барих
         </div>
       </li>
       <li className="content-center">
-        <div
-          onClick={() => goUser()}
-          className="block py-2 text-md pr-4 pl-3 text-white font-bold border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700"
-        >
-          <FiUser className="text-xl" />
-        </div>
+        {isEmpty(userData?.me) ? (
+          <div
+            onClick={() => {
+              goUser();
+              setIsOpen(false);
+            }}
+            className="block py-2 text-md pr-4 pl-3 text-white font-bold lg:text-primary-700 lg:p-0"
+          >
+            Нэвтрэх
+          </div>
+        ) : (
+          <div
+            onClick={() => {
+              goUser();
+              setIsOpen(false);
+            }}
+            className="block py-2 text-md pr-4 pl-3 text-white font-bold lg:text-primary-700 lg:p-0"
+          >
+            Хэрэглэгчийн мэдээлэл
+          </div>
+        )}
       </li>
     </ul>
   );
@@ -85,48 +112,65 @@ const Header: React.FC<Props> = ({ isBack, isMain }) => {
   };
 
   return (
-    <header className="sticky top-0 w-full z-10">
-      <nav className="bg-primary border-gray-200 px-4 lg:px-6 py-2.5 ">
-        <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
+    <header className="sticky top-0 w-full z-50">
+      <nav className="bg-primary border-gray-200 px-4 lg:px-6 py-2.5">
+        <div className="flex justify-between items-center mx-auto max-w-screen-xl">
           <div className="flex items-center">
-            {isBack && <IoArrowBack onClick={goBack} className="mr-4 text-2xl text-gray-700" />}
-
+            {isBack && <IoArrowBack onClick={goBack} className="mr-4 text-2xl text-white" />}
             <img
               src={selectedParticipant?.branch.logo ?? participant?.branch.logo}
               className="mr-3 h-14 rounded-xl"
               alt="Gochu Logo"
             />
-
-            <span className="self-center text-xl border-gray-800 font-semibold whitespace-nowrap dark:text-white">
+            <span className="text-xl font-semibold whitespace-nowrap text-white">
               {selectedParticipant?.branch.name ?? 'Онлайн захиалга'}
             </span>
           </div>
+
+          {/* Hamburger Menu Button */}
           <button
             type="button"
             onClick={() => setIsOpen(!isOpen)}
-            className="inline-flex items-center p-2 ml-1 text-sm text-white rounded-lg lg:hidden focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+            className="inline-flex items-center p-2 text-sm text-white rounded-lg lg:hidden focus:outline-none focus:ring-2 focus:ring-white"
           >
-            <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path
-                fillRule="evenodd"
-                d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-            <svg className="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path
-                fillRule="evenodd"
-                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              ></path>
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
+              />
             </svg>
           </button>
-          {isOpen && (
-            <div className="justify-between items-center w-full lg:flex lg:w-auto lg:order-1">{renderMenu}</div>
-          )}
-          <div className="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1">{renderMenu}</div>
+
+          {/* Desktop Menu */}
+          <div className="hidden lg:flex items-center">{renderMenu}</div>
         </div>
       </nav>
+
+      {/* Right Sidebar Drawer (Mobile only) */}
+      <div
+        className={`fixed top-0 right-0 h-full w-64 bg-primary shadow-lg transform transition-transform duration-300 ease-in-out z-40 lg:hidden ${
+          isOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <div className="flex justify-end p-4">
+          <button onClick={() => setIsOpen(false)} className="text-2xl text-white">
+            &times;
+          </button>
+        </div>
+        <div className="p-4">{renderMenu}</div>
+        <div className="absolute right-0 bottom-2 w-full">
+          <div className="flex w-full justify-center">
+            <img src={logo.src} className="w-24" onClick={() => router.push('https://qmenu.mn/')} />
+          </div>
+        </div>
+      </div>
+
+      {/* Overlay when sidebar is open */}
+      {isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 z-30 lg:hidden" onClick={() => setIsOpen(false)}></div>
+      )}
     </header>
   );
 };

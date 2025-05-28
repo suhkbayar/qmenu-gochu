@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { IMenuProduct } from '../../types/menu';
 import fallback from '../../assets/images/noImage.jpg';
 import { isEmpty } from 'lodash';
-import Image from 'next/image';
-import { imageLoader } from '../../tools/image';
 import { Translate } from 'react-auto-translate';
 import { CalculateProductsPrice, isConfigurable } from '../../tools/calculate';
 import { FiShoppingCart } from 'react-icons/fi';
@@ -65,22 +63,10 @@ const Index = ({ product, orderItem }: Props) => {
       <div key={product.id} className="p-2 ">
         <div className=" hover:shadow-xl  shadow-lg bg-white   rounded-md  rounded-b-2xl ">
           <div className="relative object-cover rounded-md " onClick={() => setVisible(true)}>
-            <Image
+            <img
               src={isEmpty(product.image) ? fallback.src : product.image}
-              alt="stew"
-              loader={imageLoader}
-              width={500}
-              height={600}
-              placeholder="empty"
-              className=" h-[160px] sm:h-[200px]"
-              object-fit="cover"
-              style={{
-                borderRadius: '8px',
-                width: '100%', // Ensure fixed width
-                objectFit: 'cover', // This ensures the image covers the area without distortion
-              }}
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              priority={true}
+              alt="product"
+              className="h-[160px] sm:h-[200px] w-full object-cover rounded-md"
             />
           </div>
           <div className="m-4  mt-0 mb-0">
@@ -92,9 +78,6 @@ const Index = ({ product, orderItem }: Props) => {
             >
               <Translate>{product.name} </Translate>
             </h2>
-            {/* <span className="line-clamp-2  mb-1 dark:text-gray-400  leading-[15px] h-[31px] text-gray-500 text-sm  ">
-              <Translate>{product.description} </Translate>
-            </span> */}
             <span className="block text-gray-500 text-sm mb-0 h-7 ">{CalculateProductsPrice(product.variants)}</span>
           </div>
           {isConfigurable(product) ? (

@@ -16,6 +16,7 @@ type Props = {
   name: string;
   goMap: () => void;
   showFallbackMap: boolean;
+  isYaarmag: boolean;
   setValue: UseFormSetValue<FieldValues>;
   selectedLocation?: google.maps.LatLngLiteral | null;
   setSelectedLocation: (location: google.maps.LatLngLiteral | null) => void;
@@ -25,6 +26,7 @@ type Props = {
   setIsDelivery: (value: boolean) => void;
   placeholder?: string;
   inputMode?: any;
+  isBlockZone: boolean;
   text?: string;
 };
 
@@ -41,7 +43,9 @@ const Index = ({
   showLocatioin,
   setSelectedLocation,
   inputMode,
+  isBlockZone,
   showFallbackMap,
+  isYaarmag,
   goMap,
 }: Props) => {
   const [locations, setLocations] = useState([]);
@@ -138,15 +142,36 @@ const Index = ({
                   </span>
                 </div>
               )}
-              {order?.charges
-                ?.filter((c) => c.state === 'A')
-                ?.map((item, index) => (
-                  <Alert color="warning" className="mt-2" rounded icon={BsFillInfoCircleFill}>
-                    <span className="font-medium text-md">
-                      Та хүргэлтийн {item.name} д байна. Хүргэлтийн төрбөр {item.amount.toLocaleString()}
-                    </span>
-                  </Alert>
-                ))}
+
+              {isBlockZone ? (
+                <Alert color="failure" className="mt-2" rounded icon={BsFillInfoCircleFill}>
+                  <span className="font-medium text-md">
+                    Таны сонгосон байршил Gochu korean cuisine - н хүргэлтийн бүсэд байхгүй байна.
+                  </span>
+                </Alert>
+              ) : (
+                <>
+                  {isYaarmag ? (
+                    <Alert color="failure" className="mt-2" rounded icon={BsFillInfoCircleFill}>
+                      <span className="font-medium text-md">
+                        Таны байршлын ойролцоох салбарын ажлын цаг дууссан байна.
+                      </span>
+                    </Alert>
+                  ) : (
+                    <>
+                      {order?.charges
+                        ?.filter((c) => c.state === 'A')
+                        ?.map((item, index) => (
+                          <Alert color="warning" className="mt-2" rounded icon={BsFillInfoCircleFill}>
+                            <span className="font-medium text-md">
+                              Та хүргэлтийн {item.name} д байна. Хүргэлтийн төрбөр {item.amount.toLocaleString()}
+                            </span>
+                          </Alert>
+                        ))}
+                    </>
+                  )}
+                </>
+              )}
 
               {!isEmpty(order) && isEmpty(order?.charges?.filter((c) => c.state === 'A')) && (
                 <Alert color="warning" className="mt-2" rounded icon={BsFillInfoCircleFill}>

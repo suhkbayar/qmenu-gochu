@@ -16,6 +16,7 @@ import { BsFillInfoCircleFill } from 'react-icons/bs';
 import { CALCULATE_DELIVERY_ZONE } from '../../graphql/mutation/order';
 import { IOrder } from '../../types';
 import { FieldValues, UseFormClearErrors, UseFormSetValue } from 'react-hook-form';
+import { approvedPolygons, blockedPolygons } from '../../constants/constant';
 
 type Props = {
   order: IOrder;
@@ -299,6 +300,30 @@ const AddLocationModal = ({
                         />
                       );
                     })}
+
+                    <Polygon
+                      paths={blockedPolygons}
+                      options={{
+                        fillColor: 'transparent',
+                        fillOpacity: 0.4,
+                        strokeColor: '#5e1458',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                      }}
+                      onClick={() => console.log('Polygon clicked!')}
+                    />
+
+                    <Polygon
+                      paths={approvedPolygons}
+                      options={{
+                        fillColor: 'transparent',
+                        fillOpacity: 0.4,
+                        strokeColor: '#de2b58',
+                        strokeOpacity: 0.8,
+                        strokeWeight: 2,
+                      }}
+                      onClick={() => console.log('Polygon clicked!')}
+                    />
                   </>
                 )}
               </GoogleMap>
