@@ -31,7 +31,7 @@ const Index = () => {
     if (id) {
       console.log(id);
       changeQr(id.toString());
-      getCurrentToken({ variables: { code: id, type: 'K' } });
+      getCurrentToken({ variables: { code: id, type: 'D' } });
     }
   }, [id]);
 
