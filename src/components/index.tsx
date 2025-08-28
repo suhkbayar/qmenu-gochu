@@ -1,8 +1,8 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
-import CardSkeleton from './Skelton/CardSkelton';
-import ListSkeleton from './Skelton/ListSkelton';
-import DraftCardSkeleton from './Skelton/DraftCardSkelton';
+import CardSkelton from './Skelton/CardSkelton';
+import DraftCardSkelton from './Skelton/DraftCardSkelton';
+import ListSkelton from './Skelton/ListSkelton';
 
 export const FourDigits = dynamic(() => import('./Masks/FourDigitsMask'));
 
@@ -18,7 +18,7 @@ export const BottonNavigation = dynamic(() => import('../content/BottomNavigatio
 export const Banner = dynamic(() => import('../layouts/Banner'));
 
 export const ProductCard = dynamic(() => import('../components/Card/Product'), {
-  loading: () => <CardSkeleton />,
+  loading: () => <CardSkelton />,
   ssr: false,
 });
 
@@ -51,11 +51,11 @@ export const QpayForm = dynamic(() => import('../components/Forms/Qpay'));
 export const ReceiptModal = dynamic(() => import('../components/Modal/RecieptModal'));
 
 export const HistoryCard = dynamic(() => import('./Card/HistoryCard'), {
-  loading: () => <ListSkeleton />,
+  loading: () => <ListSkelton />,
 });
 
 export const ItemCard = dynamic(() => import('./Card/ItemCard'), {
-  loading: () => <DraftCardSkeleton />,
+  loading: () => <DraftCardSkelton />,
 });
 
 export const OrderTypeStepper = dynamic(() => import('./Step/OrderStep'));

@@ -142,7 +142,6 @@ const DraftModal = ({ visible, onClose }: Props) => {
               </div>
             )}
 
-            {/* Cross-sells Section */}
             {!isEmpty(cross?.getCrossSells) && (
               <div className="flex w-full px-4 py-2">
                 <span className="text-current text-sm font-semibold">Санал болгох бүтээгдэхүүн</span>

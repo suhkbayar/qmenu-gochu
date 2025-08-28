@@ -81,7 +81,6 @@ const Index = ({ onClose, product = {}, visible }: Props) => {
       triggerAnimation();
       setValidationError('');
 
-      // Fetch cross-sells when modal opens
       if (participant?.menu?.id) {
         getCrossSells({
           variables: {
@@ -97,8 +96,8 @@ const Index = ({ onClose, product = {}, visible }: Props) => {
   }, [visible, product, participant?.menu?.id]);
 
   const triggerAnimation = () => {
-    setAnimate(true); // Reset animation
-    setTimeout(() => setAnimate(false), 1000); // Reapply animation after a delay
+    setAnimate(true);
+    setTimeout(() => setAnimate(false), 1000);
   };
 
   const renderRecommendations = (result: any[]) => {
@@ -316,7 +315,6 @@ const Index = ({ onClose, product = {}, visible }: Props) => {
             {validationError && <div className="mt-2 text-red-500 text-sm text-center">{validationError}</div>}
           </div>
 
-          {/* Cross-sells Section */}
           {!isEmpty(cross?.getCrossSells) && (
             <div className="flex w-full px-4 py-2 mt-4">
               <span className="text-current text-sm font-semibold">Нэмж захиалах уу</span>
