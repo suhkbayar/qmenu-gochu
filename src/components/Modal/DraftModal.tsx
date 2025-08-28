@@ -8,13 +8,14 @@ import { CiTrash } from 'react-icons/ci';
 import { CURRENCY } from '../../constants/currency';
 import { useRouter } from 'next/router';
 import { getPayload } from '../../providers/auth';
-import { useQuery } from '@apollo/client';
-import { ME } from '../../graphql/query';
+import { useQuery, useLazyQuery } from '@apollo/client';
+import { ME, GET_CROSS_SELLS } from '../../graphql/query';
 import { useNotificationContext } from '../../providers/notification';
 import { NotificationActionType } from '../../constants/constant';
 import validateLogin from '../../assets/user/login.svg';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MinAmoiuntWarning from './MinAmountWarning';
+import { RecommendedCard, RecommendedSkeleton } from '..';
 
 type Props = {
   visible: boolean;
@@ -29,6 +30,8 @@ const DraftModal = ({ visible, onClose }: Props) => {
   const { order, remove, participant } = useCallStore();
   const [visibleMinAmount, setVisibleMinAmount] = useState(false);
 
+  const [getCrossSells, { data: cross, loading: aiLoading }] = useLazyQuery(GET_CROSS_SELLS);
+
   const role = getPayload()?.role;
 
   const { data: userData } = useQuery(ME, {
@@ -38,6 +41,35 @@ const DraftModal = ({ visible, onClose }: Props) => {
   const products = participant?.menu?.categories.flatMap((category) => {
     return [...category.products, ...category.children.flatMap((child) => child.products)];
   });
+
+  useEffect(() => {
+    if (visible && !isEmpty(order?.items) && participant?.menu?.id) {
+      getCrossSells({
+        variables: {
+          menuId: participant.menu.id,
+          ids: order?.items.map((item) => item.productId),
+        },
+      });
+    }
+  }, [visible, order?.items, participant?.menu?.id]);
+
+  const renderRecommendations = (result: any[]) => {
+    return (
+      <div className="overflow-x-auto">
+        <div className="flex space-x-1">
+          {result?.map((product) => (
+            <div key={product.id} className="min-w-[180px] max-w-[180px]">
+              <RecommendedCard
+                isFullWidth
+                product={product}
+                orderItem={order?.items?.find((item) => item.productId === product.productId)}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
 
   const goDelivery = () => {
     if (order?.items.length === 0) return;
@@ -109,6 +141,20 @@ const DraftModal = ({ visible, onClose }: Props) => {
                 ))}
               </div>
             )}
+
+            {!isEmpty(cross?.getCrossSells) && (
+              <div className="flex w-full px-4 py-2">
+                <span className="text-current text-sm font-semibold">Санал болгох бүтээгдэхүүн</span>
+              </div>
+            )}
+
+            <div className="flex justify-start px-4 mb-4">
+              <div className="px-2 py-2 rounded-2xl rounded-bl-none text-gray-900 text-sm leading-relaxed break-words overflow-hidden">
+                <div className="flex overflow-x-auto space-x-3 scrollbar-hide">
+                  {aiLoading ? <RecommendedSkeleton /> : <>{renderRecommendations(cross?.getCrossSells)}</>}
+                </div>
+              </div>
+            </div>
           </div>
         </Modal.Body>
         <Modal.Footer className="  absolute bg-white bottom-0 w-full space-x-0 p-0">
