@@ -5,49 +5,85 @@ import { useCallStore } from '../../contexts/call.store';
 import { useTranslation } from 'react-i18next';
 import { useRouter } from 'next/router';
 import { AiOutlineInbox } from 'react-icons/ai';
-import { HistoryCard } from '../../components';
+import { HistoryCard, Loader } from '../../components';
+import { ACTIVE_STATES } from '../../constants/constant';
+import { isEmpty } from 'lodash';
+import { useState } from 'react';
 
 const Index = () => {
   const router = useRouter();
   const { t } = useTranslation('language');
-  const { data: orders } = useQuery(GET_ORDERS);
+  const [active, setActive] = useState(true);
 
+  const { loading, data: orders, error } = useQuery(GET_ORDERS);
   const { participant } = useCallStore();
+
   const goBack = () => {
     router.push(`/branch?id=${participant.id}`);
   };
 
-  const paidOrders = orders?.getOrders?.filter((order: any) => order.paymentState === 'PAID') ?? [];
+  if (loading) return <Loader />;
+
+  if (error) {
+    router.push(`/branch?id=${participant.id}`);
+    return null;
+  }
+
+  const allOrders = orders?.getOrders ?? [];
+  const activeOrders = allOrders.filter((order: any) => !ACTIVE_STATES.includes(order.state));
+  const unActiveOrders = allOrders.filter((order: any) => ACTIVE_STATES.includes(order.state));
 
   const EmptyOrder = () => (
-    <div className=" grid  place-items-center ">
-      <div className="place-items-center">
-        <AiOutlineInbox className="text-gray-300 w-20 h-20" />
-        <div className="w-full flex place-content-center text-sm text-grayish">{t('mainPage.NoOrderFound')}</div>
-      </div>
+    <div className="animate-pulse grid place-items-center">
+      <AiOutlineInbox className="text-gray-300 w-20 h-20" />
+      <div className="w-full flex place-content-center text-sm text-grayish">{t('mainPage.NoOrderFound')}</div>
     </div>
   );
 
+  const renderOrders = (orderList: any[]) =>
+    isEmpty(orderList) ? (
+      <EmptyOrder />
+    ) : (
+      orderList.map((item: any) => <HistoryCard key={item.id} branch={participant.branch} order={item} />)
+    );
+
   return (
-    <section className="flex w-full justify-center">
-      <div className="relative w-full h-screen sm:w-3/6 md:w-3/5 lg:w-3/5 xl:w-3/6 2xl:w-2/5">
-        <div className=" flex gap-4 items-center w-full mt-4 px-4">
-          <IoArrowBack onClick={() => goBack()} className="text-2xl text-gray-600" />{' '}
-          <span className="text-lg text-primary font-semibold">Захиалгын түүх</span>
-        </div>
-        <div className="w-full grid gap-2   mt-8 px-4">
-          {paidOrders.length === 0 ? (
-            <EmptyOrder />
-          ) : (
-            <div className="grid">
-              {paidOrders.map((order: any) => (
-                <HistoryCard key={order.id} branch={participant.branch} order={order} />
-              ))}
-            </div>
-          )}
+    <>
+      <div className="relative shadow-lg top-0 w-full z-10 bg-white py-2 md:py-4 dark:bg-gray-800">
+        <div className="container flex w-full place-items-center px-4 mx-auto md:flex md:items-center">
+          <IoArrowBack onClick={goBack} className="text-xl dark:text-white" />
+          <div className="flex w-full place-items-center place-content-center">
+            <a className="p-2 lg:px-4 md:mx-2 text-current font-semibold rounded hover:bg-gray-200 hover:text-gray-700 transition-colors duration-300">
+              {t('mainPage.OrderHistory')}
+            </a>
+          </div>
         </div>
       </div>
-    </section>
+      <div className="p-4">
+        <ul className="grid grid-cols-6 flex-wrap text-sm font-medium text-center text-gray-500 dark:text-gray-400">
+          <li onClick={() => setActive(true)} className="mr-2 col-span-3">
+            <a
+              className={`inline-block w-full px-4 py-3 cursor-pointer ${
+                active ? 'text-white bg-current' : 'bg-gray-200'
+              } rounded-lg`}
+              aria-current="page"
+            >
+              {t('mainPage.ActiveSubscription')}
+            </a>
+          </li>
+          <li onClick={() => setActive(false)} className="mr-2 col-span-3">
+            <a
+              className={`inline-block w-full px-4 py-3 cursor-pointer ${
+                active ? 'bg-gray-200' : 'text-white bg-current'
+              } rounded-lg`}
+            >
+              {t('mainPage.FulfilledOrders')}
+            </a>
+          </li>
+        </ul>
+        <div className="mt-4">{active ? <>{renderOrders(activeOrders)}</> : <>{renderOrders(unActiveOrders)}</>}</div>
+      </div>
+    </>
   );
 };
 

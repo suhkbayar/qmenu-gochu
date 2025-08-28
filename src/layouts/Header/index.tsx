@@ -48,6 +48,17 @@ const Header: React.FC<Props> = ({ isBack, isMain }) => {
           Нүүр
         </div>
       </li>
+      <li className="border-b-2 border-white lg:border-0">
+        <div
+          onClick={() => {
+            router.push(`history`);
+            setIsOpen(false);
+          }}
+          className="block py-2 my-2 text-md pr-4 pl-3 text-white font-bold lg:text-primary-700 lg:p-0"
+        >
+          Түүх
+        </div>
+      </li>
       <li className="content-center">
         <div
           onClick={() => {

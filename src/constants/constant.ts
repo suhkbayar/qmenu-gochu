@@ -68,6 +68,8 @@ export const TYPE = {
   MOVE: 'Moved',
 };
 
+export const ACTIVE_STATES = ['COMPLETED', 'CANCELLED'];
+
 export const DATE_FORMAT = 'YYYY-MM-DD';
 export const YEAR_FORMAT = 'YYYY';
 export const PATTERN_CODE = '[0-9]{1}'; // Pattern for four digits

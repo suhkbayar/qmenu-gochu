@@ -33,8 +33,8 @@ export const BranchesModal = dynamic(() => import('../components/Modal/BranchesM
 export const BusyConfirm = dynamic(() => import('../components/Modal/BusyConfirm'));
 export const BottomNavigation = dynamic(() => import('../content/BottomNavigation'));
 export const ControlledTextArea = dynamic(() => import('../components/ControlledForms/ControlledTextArea'));
-export const Loader = dynamic(() => import('../components/Loader/Loader'));
-export const DraftModal = dynamic(() => import('../components/Modal/DraftModal'));
+export const Loader = dynamic(() => import('./Loader/Loader'));
+export const DraftModal = dynamic(() => import('./Modal/DraftModal'));
 
 export const ScheduleDeliveryModal = dynamic(() => import('../components/Modal/ScheduleDeliveryModal'));
 
