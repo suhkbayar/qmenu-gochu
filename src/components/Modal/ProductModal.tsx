@@ -8,11 +8,13 @@ import Image from 'next/image';
 import fallback from '../../assets/images/noImage.jpg';
 import { isEmpty } from 'lodash';
 import { imageLoader } from '../../tools/image';
-import { OptionCard, VariantCard } from '..';
+import { OptionCard, VariantCard, RecommendedCard, RecommendedSkeleton } from '..';
 import { generateUUID } from '../../tools/generate';
 import { CURRENCY } from '../../constants/currency';
 import { Modal } from 'flowbite-react';
 import { customThemeModal1 } from '../../../styles/themes';
+import { useLazyQuery } from '@apollo/client';
+import { GET_CROSS_SELLS } from '../../graphql/query';
 
 type Props = {
   onClose: () => void;
@@ -27,7 +29,7 @@ interface ValidationResult {
 }
 
 const Index = ({ onClose, product = {}, visible }: Props) => {
-  const { addOrderItem, addOrderItemOptional } = useCallStore();
+  const { addOrderItem, addOrderItemOptional, participant } = useCallStore();
   const [animate, setAnimate] = useState(false);
   const { t } = useTranslation('language');
   const [selectedItem, setSelectedItem] = useState<IOrderItem | null>(null);
@@ -36,6 +38,8 @@ const Index = ({ onClose, product = {}, visible }: Props) => {
   const modalBodyRef = useRef<HTMLDivElement>(null);
   const [validationError, setValidationError] = useState<string>('');
   const [validateOptions, setValidateOptions] = useState([]);
+
+  const [getCrossSells, { data: cross, loading: aiLoading }] = useLazyQuery(GET_CROSS_SELLS);
 
   const scrollToBottom = () => {
     if (modalBodyRef.current) {
@@ -76,15 +80,39 @@ const Index = ({ onClose, product = {}, visible }: Props) => {
       setSelectedItem(item);
       triggerAnimation();
       setValidationError('');
+
+      // Fetch cross-sells when modal opens
+      if (participant?.menu?.id) {
+        getCrossSells({
+          variables: {
+            menuId: participant.menu.id,
+            ids: [product.productId],
+          },
+        });
+      }
     } else {
       setSelectedItem(null);
       setValidationError('');
     }
-  }, [visible, product]);
+  }, [visible, product, participant?.menu?.id]);
 
   const triggerAnimation = () => {
     setAnimate(true); // Reset animation
     setTimeout(() => setAnimate(false), 1000); // Reapply animation after a delay
+  };
+
+  const renderRecommendations = (result: any[]) => {
+    return (
+      <div className="overflow-x-auto">
+        <div className="flex space-x-1">
+          {result?.map((product) => (
+            <div key={product.id} className="min-w-[180px] max-w-[180px]">
+              <RecommendedCard isFullWidth product={product} orderItem={null} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   const validateMandatoryOptions = (item: IOrderItem): ValidationResult => {
@@ -286,6 +314,21 @@ const Index = ({ onClose, product = {}, visible }: Props) => {
                 ))}
 
             {validationError && <div className="mt-2 text-red-500 text-sm text-center">{validationError}</div>}
+          </div>
+
+          {/* Cross-sells Section */}
+          {!isEmpty(cross?.getCrossSells) && (
+            <div className="flex w-full px-4 py-2 mt-4">
+              <span className="text-current text-sm font-semibold">Нэмж захиалах уу</span>
+            </div>
+          )}
+
+          <div className="flex justify-start px-4 mb-4">
+            <div className="px-2 py-2 rounded-2xl rounded-bl-none text-gray-900 text-sm leading-relaxed break-words overflow-hidden">
+              <div className="flex overflow-x-auto space-x-3 scrollbar-hide">
+                {aiLoading ? <RecommendedSkeleton /> : <>{renderRecommendations(cross?.getCrossSells)}</>}
+              </div>
+            </div>
           </div>
         </div>
       </Modal.Body>

@@ -6,3 +6,4 @@ export * from './song';
 export * from './admin';
 export * from './channel';
 export * from './location';
+export * from './product';

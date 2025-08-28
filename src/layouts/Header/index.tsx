@@ -4,10 +4,11 @@ import { useRouter } from 'next/router';
 import { useCallStore } from '../../contexts/call.store';
 import { getPayload } from '../../providers/auth';
 import { useQuery } from '@apollo/client';
-import { ME } from '../../graphql/query';
+import { ME, GET_ORDERS } from '../../graphql/query';
 import { isEmpty } from 'lodash';
 import { IoArrowBack } from 'react-icons/io5';
 import logo from '../../assets/images/newQ.png';
+import { ACTIVE_STATES } from '../../constants/constant';
 
 type Props = {
   isBack?: boolean;
@@ -26,6 +27,14 @@ const Header: React.FC<Props> = ({ isBack, isMain }) => {
       setUser(data.me);
     },
   });
+
+  const { data: ordersData } = useQuery(GET_ORDERS, {
+    skip: !participant?.id,
+  });
+
+  const allOrders = ordersData?.getOrders || [];
+  // const totalOrdersCount = allOrders.length;
+  const activeOrdersCount = allOrders.filter((order: any) => !ACTIVE_STATES.includes(order.state)).length;
 
   const goUser = () => {
     if (!isEmpty(userData?.me)) {
@@ -48,15 +57,22 @@ const Header: React.FC<Props> = ({ isBack, isMain }) => {
           Нүүр
         </div>
       </li>
-      <li className="border-b-2 border-white lg:border-0">
+      <li className="content-center">
         <div
           onClick={() => {
             router.push(`history`);
             setIsOpen(false);
           }}
-          className="block py-2 my-2 text-md pr-4 pl-3 text-white font-bold lg:text-primary-700 lg:p-0"
+          className="block py-2 text-md pr-4 pl-3 text-white font-bold lg:text-primary-700 lg:p-0 "
         >
-          Түүх
+          <span className="relative">
+            Түүх
+            {activeOrdersCount > 0 && (
+              <span className="absolute top-0 left-10 bg-blue-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold">
+                {activeOrdersCount > 99 ? '99+' : activeOrdersCount}
+              </span>
+            )}
+          </span>
         </div>
       </li>
       <li className="content-center">
