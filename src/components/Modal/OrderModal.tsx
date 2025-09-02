@@ -16,6 +16,7 @@ import { VALIDATE_TRANSACTION } from '../../graphql/mutation/order';
 import { useNotificationContext } from '../../providers/notification';
 import { useCallStore } from '../../contexts/call.store';
 import { customeModalTheme } from '../../../styles/themes';
+import moment from 'moment';
 
 export const OrderModal = ({ orderId, orderVisible, onClose }) => {
   const router = useRouter();
@@ -36,6 +37,13 @@ export const OrderModal = ({ orderId, orderVisible, onClose }) => {
       }
     },
   });
+
+  const isOrderFromToday = () => {
+    if (!data?.getOrder?.createdAt) return false;
+    const orderDate = moment(data.getOrder.createdAt);
+    const today = moment();
+    return orderDate.isSame(today, 'day');
+  };
 
   const convertState = (state: any) => {
     switch (state) {
@@ -170,7 +178,7 @@ export const OrderModal = ({ orderId, orderVisible, onClose }) => {
             </div>
           </Modal.Body>
 
-          {data.getOrder?.paymentState !== 'PAID' && (
+          {data.getOrder?.paymentState !== 'PAID' && isOrderFromToday() && (
             <>
               {participant?.orderable && (
                 <>
