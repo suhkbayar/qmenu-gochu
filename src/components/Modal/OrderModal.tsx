@@ -38,7 +38,6 @@ export const OrderModal = ({ orderId, orderVisible, onClose }) => {
     },
   });
 
-  // Check if the order was created today
   const isOrderFromToday = () => {
     if (!data?.getOrder?.createdAt) return false;
     const orderDate = moment(data.getOrder.createdAt);
@@ -179,7 +178,6 @@ export const OrderModal = ({ orderId, orderVisible, onClose }) => {
             </div>
           </Modal.Body>
 
-          {/* Payment button - only show for today's orders and non-paid orders */}
           {data.getOrder?.paymentState !== 'PAID' && isOrderFromToday() && (
             <>
               {participant?.orderable && (
