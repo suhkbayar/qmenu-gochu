@@ -63,7 +63,7 @@ const Index = () => {
   };
 
   const onSubmit = (data: FieldValues) => {
-    signIn({ variables: { phone: data.phone, password: data.password } });
+    signIn({ variables: { phone: data.phone, password: data.password, deviceInput: null } });
   };
 
   const goPasswordRecovery = () => {

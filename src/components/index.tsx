@@ -1,8 +1,8 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import CardSkelton from './Skelton/CardSkelton';
-import ListSkelton from './Skelton/ListSkelton';
 import DraftCardSkelton from './Skelton/DraftCardSkelton';
+import ListSkelton from './Skelton/ListSkelton';
 
 export const FourDigits = dynamic(() => import('./Masks/FourDigitsMask'));
 
@@ -62,3 +62,6 @@ export const OrderTypeStepper = dynamic(() => import('./Step/OrderStep'));
 
 export const TimeTable = dynamic(() => import('./TimeTable/index'));
 export const Contact = dynamic(() => import('./Info/Contact'));
+
+export const RecommendedCard = dynamic(() => import('./Card/RecommendedCard'));
+export const RecommendedSkeleton = dynamic(() => import('./Skelton/RecommendedSkeleton'));
