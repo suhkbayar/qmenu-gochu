@@ -47,6 +47,7 @@ export const AddLocationModal = dynamic(() => import('../components/Modal/AddLoc
 export const VatForm = dynamic(() => import('../components/Forms/VatForm'));
 export const BankFrom = dynamic(() => import('../components/Forms/Bank'));
 export const QpayForm = dynamic(() => import('../components/Forms/Qpay'));
+export const UpdateUserForm = dynamic(() => import('../components/Forms/UpdateUser'));
 
 export const ReceiptModal = dynamic(() => import('../components/Modal/RecieptModal'));
 

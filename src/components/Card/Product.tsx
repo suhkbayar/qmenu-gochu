@@ -4,14 +4,17 @@ import fallback from '../../assets/images/noImage.jpg';
 import { isEmpty } from 'lodash';
 import { Translate } from 'react-auto-translate';
 import { CalculateProductsPrice, isConfigurable } from '../../tools/calculate';
-import { FiShoppingCart } from 'react-icons/fi';
+import { FiShoppingCart, FiHeart } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
 import { MenuItemState } from '../../constants/constant';
 import { useCallStore } from '../../contexts/call.store';
-import { IOrderItem } from '../../types';
+import { IOrderItem, FavouriteItemType } from '../../types';
 import { FiPlus } from 'react-icons/fi';
 import { FiMinus } from 'react-icons/fi';
 import { ProductModal } from '..';
+import { useMutation, useQuery } from '@apollo/client';
+import { EDIT_FAVOURITE } from '../../graphql/mutation/favourites';
+import { GET_FAVOURITE_IDS } from '../../graphql/query/favourites';
 
 type Props = {
   product: IMenuProduct;
@@ -23,6 +26,20 @@ const Index = ({ product, orderItem }: Props) => {
   const [visible, setVisible] = useState(false);
   const { add, remove } = useCallStore();
   const [showAnimation, setShowAnimation] = useState(false);
+
+  const { data: favouriteIds, refetch: refetchFavouriteIds } = useQuery(GET_FAVOURITE_IDS, {
+    variables: {
+      type: FavouriteItemType.PRODUCT,
+    },
+  });
+
+  const [editFavourite] = useMutation(EDIT_FAVOURITE, {
+    onCompleted: () => {
+      refetchFavouriteIds();
+    },
+  });
+
+  const isFavourite = favouriteIds?.getFavouriteIds?.includes(product.productId) || false;
 
   useEffect(() => {
     setShowAnimation(true);
@@ -58,6 +75,16 @@ const Index = ({ product, orderItem }: Props) => {
     setVisible(false);
   };
 
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    editFavourite({
+      variables: {
+        id: product.productId,
+        type: FavouriteItemType.PRODUCT,
+      },
+    });
+  };
+
   return (
     <>
       <div key={product.id} className="p-2 ">
@@ -68,6 +95,14 @@ const Index = ({ product, orderItem }: Props) => {
               alt="product"
               className="h-[160px] sm:h-[200px] w-full object-cover rounded-md"
             />
+            <button
+              onClick={handleToggleFavorite}
+              className={`absolute top-2 right-2 p-2 rounded-full shadow-lg transition-colors ${
+                isFavourite ? 'bg-red-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-100'
+              }`}
+            >
+              <FiHeart className={`w-4 h-4 ${isFavourite ? 'fill-current' : ''}`} />
+            </button>
           </div>
           <div className="m-4  mt-0 mb-0">
             <h2

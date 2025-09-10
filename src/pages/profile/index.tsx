@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 import { IoArrowBack } from 'react-icons/io5';
 import { useCallStore } from '../../contexts/call.store';
-import { AuthContext, getPayload } from '../../providers/auth';
+import { AuthContext } from '../../providers/auth';
 import { useContext } from 'react';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORDERS, ME } from '../../graphql/query';
@@ -12,9 +12,7 @@ import { SlUserFemale, SlUser } from 'react-icons/sl';
 import { FiChevronRight } from 'react-icons/fi';
 import userInfo from '../../assets/user/userInfo.png';
 import heart from '../../assets/user/heart.png';
-import discount from '../../assets/user/Discount.svg';
 import Calories from '../../assets/user/Calories.svg';
-import Basket from '../../assets/user/Basket.svg';
 import Camera from '../../assets/user/Camera.svg';
 import logout from '../../assets/user/logout.png';
 import bonus from '../../assets/user/bonus.svg';
@@ -86,7 +84,10 @@ const Index = () => {
 
           <div className=" p-3 md:flex md:justify-center">
             <ul className="  space-y-2">
-              <div className="flex cursor-pointer hover:bg-gainsboro  items-center rounded-lg  place-content-between p-2">
+              <div
+                onClick={() => router.push(`/account?id=${id}`)}
+                className="flex cursor-pointer hover:bg-gainsboro  items-center rounded-lg  place-content-between p-2"
+              >
                 <div className="flex place-content-between">
                   <img src={userInfo.src} alt={userInfo.src} className="h-7 w-7 text-gray-400 mr-2" />
                   <span className="text-gray-700 ">{t('mainPage.CustomerInformation')}</span>
@@ -94,49 +95,45 @@ const Index = () => {
                 <FiChevronRight className="text-gray-500 text-xl " />
               </div>
 
-              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2">
+              <div
+                onClick={() => router.push(`/favorites?id=${id}`)}
+                className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2"
+              >
                 <div className="flex place-content-between">
-                  <img src={heart.src} className="h-7 w-7 text-gray-400 mr-2" />
+                  <img src={heart.src} alt="heart" className="h-7 w-7 text-gray-400 mr-2" />
                   <span className="text-gray-700 ">{t('mainPage.MyFavorite')}</span>
                 </div>
                 <FiChevronRight className="text-gray-500 text-xl " />
               </div>
 
-              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg   items-center place-content-between p-2">
+              <div
+                onClick={() => router.push(`/bonuses?id=${id}`)}
+                className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2"
+              >
                 <div className="flex place-content-between">
-                  <img src={discount.src} className="h-7 w-7 text-gray-400 mr-2" />
-                  <span className="text-gray-700 ">{t('mainPage.DiscountCards')}</span>
-                </div>
-                <FiChevronRight className="text-gray-500 text-xl " />
-              </div>
-
-              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2">
-                <div className="flex place-content-between">
-                  <img src={Basket.src} className="h-7 w-7 text-gray-400 mr-2" />
-                  <span className="text-gray-700 ">Миний сагс</span>
-                </div>
-                <FiChevronRight className="text-gray-500 text-xl " />
-              </div>
-
-              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2">
-                <div className="flex place-content-between">
-                  <img src={bonus.src} className="h-7 w-7 text-gray-400 mr-2" />
+                  <img src={bonus.src} alt="bonus" className="h-7 w-7 text-gray-400 mr-2" />
                   <span className="text-gray-700 ">Урамшуулал </span>
                 </div>
                 <FiChevronRight className="text-gray-500 text-xl " />
               </div>
 
-              <div className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2">
+              <div
+                onClick={() => router.push(`/gift-coupons?id=${id}`)}
+                className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2"
+              >
                 <div className="flex place-content-between">
-                  <img src={Calories.src} className="h-7 w-7 text-gray-400 mr-2" />
+                  <img src={Calories.src} alt="gift" className="h-7 w-7 text-gray-400 mr-2" />
                   <span className="text-gray-700 ">{t('mainPage.GiftCoupon')}</span>
                 </div>
                 <FiChevronRight className="text-gray-500 text-xl " />
               </div>
 
-              <div className="flex  cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2">
+              <div
+                onClick={() => router.push(`/share?id=${id}`)}
+                className="flex  cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2"
+              >
                 <div className="flex place-content-between">
-                  <img src={Camera.src} className="h-7 w-7 text-gray-400 mr-2" />
+                  <img src={Camera.src} alt="share" className="h-7 w-7 text-gray-400 mr-2" />
                   <span className="text-gray-700  ">{t('mainPage.ShareWithOthers')}</span>
                 </div>
                 <FiChevronRight className="text-gray-500 text-xl " />
@@ -147,7 +144,7 @@ const Index = () => {
                 className="flex cursor-pointer hover:bg-gainsboro rounded-lg  items-center place-content-between p-2"
               >
                 <div className="flex place-content-between">
-                  <img src={logout.src} className="h-7 w-7 text-gray-400 mr-2" />
+                  <img src={logout.src} alt="logout" className="h-7 w-7 text-gray-400 mr-2" />
                   <span className="text-gray-700 ">{t('mainPage.Signout')}</span>
                 </div>
                 <FiChevronRight className="text-gray-500 text-xl " />
