@@ -9,3 +9,4 @@ export * from './time-table';
 export * from './transaction';
 export * from './config';
 export * from './channel.config';
+export * from './favourite';
