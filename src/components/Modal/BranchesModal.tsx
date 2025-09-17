@@ -2,13 +2,17 @@ import { Modal } from 'flowbite-react';
 import { customThemeDraftModal } from '../../../styles/themes';
 import { useTranslation } from 'react-i18next';
 import { isEmpty } from 'lodash';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_BRANCHES } from '../../graphql/query';
 import { useEffect, useState } from 'react';
 import { useCallStore } from '../../contexts/call.store';
 import { useRouter } from 'next/router';
 import { CURRENT_TOKEN } from '../../graphql/mutation/token';
 import { setAccessToken } from '../../providers/auth';
+import { FiHeart } from 'react-icons/fi';
+import { EDIT_FAVOURITE } from '../../graphql/mutation/favourites';
+import { GET_FAVOURITE_IDS } from '../../graphql/query/favourites';
+import { FavouriteItemType } from '../../types';
 
 type Props = {
   visible: boolean;
@@ -23,6 +27,18 @@ const BranchesModal = ({ visible, onClose }: Props) => {
   const [branches, setBranches] = useState([]);
   const [selectedBranch, setSelectedBranch] = useState(null);
   const { participant, setSelectedParticipant, selectedParticipant } = useCallStore();
+
+  const { data: favouriteIds, refetch: refetchFavouriteIds } = useQuery(GET_FAVOURITE_IDS, {
+    variables: {
+      type: FavouriteItemType.BRANCH,
+    },
+  });
+
+  const [editFavourite] = useMutation(EDIT_FAVOURITE, {
+    onCompleted: () => {
+      refetchFavouriteIds();
+    },
+  });
 
   const [getBranches, { data }] = useLazyQuery(GET_BRANCHES, {
     onCompleted: (data) => {
@@ -65,6 +81,20 @@ const BranchesModal = ({ visible, onClose }: Props) => {
     onClose();
   };
 
+  const handleToggleFavorite = (e: React.MouseEvent, branchId: string) => {
+    e.stopPropagation();
+    editFavourite({
+      variables: {
+        id: branchId,
+        type: FavouriteItemType.BRANCH,
+      },
+    });
+  };
+
+  const isFavourite = (branchId: string) => {
+    return favouriteIds?.getFavouriteIds?.includes(branchId) || false;
+  };
+
   return (
     <Modal
       theme={customThemeDraftModal}
@@ -96,6 +126,18 @@ const BranchesModal = ({ visible, onClose }: Props) => {
                   <span className="col-span-3 flex self-center items-center font-semibold text-gray-700">
                     {item?.branch?.name}
                   </span>
+
+                  <div className="col-span-2 flex justify-end items-center">
+                    <button
+                      onClick={(e) => handleToggleFavorite(e, item?.id)}
+                      className={`p-2 rounded-full shadow-sm transition-colors ${
+                        isFavourite(item?.id) ? 'bg-red-500 text-white' : 'bg-white text-gray-600 hover:bg-gray-100'
+                      }`}
+                    >
+                      <FiHeart className={`w-4 h-4 ${isFavourite(item?.id) ? 'fill-current' : ''}`} />
+                    </button>
+                  </div>
+
                   <div className="col-span-6 h-12   flex self-center items-center font-semibold text-gray-700">
                     <span className="line-clamp-2">{item?.branch?.address}</span>
                   </div>
