@@ -355,6 +355,8 @@
     "GiftCoupons": "Gift Coupons",
     "ValuableItems": "Valuable Items",
     "MyHistory": "My History",
-    "Points": "Points"
+    "Points": "Points",
+    "DeliveryPerson": "Delivery Person",
+    "DeliveryPersonDetails": "Delivery Person Details"
   }
 }

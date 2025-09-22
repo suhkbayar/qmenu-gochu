@@ -93,52 +93,16 @@ const AddLocationModal = ({
       }
     },
   });
-  const MOCK_LOCATIONS = [
-    {
-      type: null,
-      photo: null,
-      nameEn: null,
-      name: null,
-      lon: 106.93900018930435,
-      lat: 47.902237502051875,
-      keywords: null,
-      id: null,
-      floor: null,
-      description: 'БЗД, 26-р хороо, Jiahe chinese restaurant',
-      code: null,
-      address: 'Jiahe chinese restaurant',
-      __typename: 'Location',
-    },
-    {
-      type: null,
-      photo: null,
-      nameEn: null,
-      name: null,
-      lon: 106.9387024641037,
-      lat: 47.902372362871304,
-      keywords: null,
-      id: null,
-      floor: null,
-      description: 'БЗД, 26-р хороо, We Group',
-      code: null,
-      address: 'We Group',
-      __typename: 'Location',
-    },
-  ];
+
   const [getNearestLocations, { loading }] = useLazyQuery(GET_NEAREST_LOCATIONS, {
     onCompleted(data) {
       if (!isEmpty(data?.getNearestLocations)) {
         let locations = data?.getNearestLocations;
         setNearestLocations(locations);
-        let addr = `${locations[0].address}, ${locations[0].description}`;
-        setAddress(addr);
+        let address = `${locations[0].address}, ${locations[0].description}`;
+        setAddress(address);
+        // setValue(name, address);
       }
-    },
-    onError(error) {
-      console.error('Query failed, using mock data:', error);
-      setNearestLocations(MOCK_LOCATIONS);
-      let addr = `${MOCK_LOCATIONS[0].address}, ${MOCK_LOCATIONS[0].description}`;
-      setAddress(addr);
     },
   });
 

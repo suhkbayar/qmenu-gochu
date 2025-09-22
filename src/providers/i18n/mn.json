@@ -369,6 +369,8 @@
     "GiftCoupons": "Бэлэг (Купон)",
     "ValuableItems": "Үнэт зүйлс",
     "MyHistory": "Миний түүх",
-    "Points": "Оноо"
+    "Points": "Оноо",
+    "DeliveryPerson": "Хүргэлтийн жолооч",
+    "DeliveryPersonDetails": "Жолоочийн мэдээлэл"
   }
 }

@@ -345,6 +345,8 @@
     "GiftCoupons": "Presentkuponger",
     "ValuableItems": "Värdefulla föremål",
     "MyHistory": "Min historia",
-    "Points": "Poäng"
+    "Points": "Poäng",
+    "DeliveryPerson": "Leveransperson",
+    "DeliveryPersonDetails": "Information om leveransperson"
   }
 }

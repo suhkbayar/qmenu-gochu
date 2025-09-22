@@ -345,6 +345,8 @@
     "GiftCoupons": "기프트 쿠폰",
     "ValuableItems": "귀중한 아이템",
     "MyHistory": "내 기록",
-    "Points": "포인트"
+    "Points": "포인트",
+    "DeliveryPerson": "배달원",
+    "DeliveryPersonDetails": "배달원 세부 정보"
   }
 }

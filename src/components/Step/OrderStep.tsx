@@ -1,6 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { IOrder } from '../../types';
+import { DRAFT_TYPE } from '../../constants/constant';
 
 type Props = {
   order: IOrder;
@@ -59,6 +60,12 @@ const Stepper = ({ order, count }: Props) => {
             )}
           </span>
           <div className="font-medium text-sm leading-tight">{label}</div>
+          {order.state === DRAFT_TYPE.DELIVERING && count === 4 && index === 3 && order.additional && (
+            <div className="mt-2 ml-2">
+              <span className="text-xs text-misty">{t('mainPage.DeliveryPerson')}: </span>
+              <span className="text-xs text-current">{order.additional}</span>
+            </div>
+          )}
         </li>
       ))}
     </ol>

@@ -40,6 +40,7 @@ export interface IOrder {
   vatLottery: string;
   vatCode: string;
   vatData: string;
+  additional?: string;
   phone?: string;
   acceptedAt: string;
   preparedAt: string;

@@ -345,6 +345,8 @@
     "GiftCoupons": "Bons cadeaux",
     "ValuableItems": "Articles de valeur",
     "MyHistory": "Mon historique",
-    "Points": "Points"
+    "Points": "Points",
+    "DeliveryPerson": "Livreur",
+    "DeliveryPersonDetails": "Détails du livreur"
   }
 }

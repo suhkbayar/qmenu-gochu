@@ -345,6 +345,8 @@
     "GiftCoupons": "ギフトクーポン",
     "ValuableItems": "貴重なアイテム",
     "MyHistory": "私の履歴",
-    "Points": "ポイント"
+    "Points": "ポイント",
+    "DeliveryPerson": "配達員",
+    "DeliveryPersonDetails": "配達員の詳細"
   }
 }

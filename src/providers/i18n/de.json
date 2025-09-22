@@ -345,6 +345,8 @@
     "GiftCoupons": "Geschenkgutscheine",
     "ValuableItems": "Wertvolle Gegenstände",
     "MyHistory": "Meine Geschichte",
-    "Points": "Punkte"
+    "Points": "Punkte",
+    "DeliveryPerson": "Lieferant",
+    "DeliveryPersonDetails": "Details zum Lieferanten"
   }
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CURRENCY } from '../../constants/currency';
+import { DRAFT_TYPE } from '../../constants/constant';
 import { useNotificationContext } from '../../providers/notification';
 import { IBranch } from '../../types';
 import { IOrder } from '../../types/order';
@@ -92,6 +93,12 @@ const Index = ({ branch, order }: Props) => {
                         {t(`mainPage.${order.state}`)}
                       </span>
                     </div>
+                    {order.state === DRAFT_TYPE.DELIVERING && order.additional && (
+                      <div className="mt-2">
+                        <span className="text-xs text-misty">{t('mainPage.DeliveryPerson')}: </span>
+                        <span className="text-xs text-current">{order.additional}</span>
+                      </div>
+                    )}
                   </div>
                   <div className="col-span-2 text-end  place-self-end content-between grid">
                     {order.vatState === 'G' ? (

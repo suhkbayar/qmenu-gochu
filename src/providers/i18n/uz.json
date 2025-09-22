@@ -344,6 +344,8 @@
     "GiftCoupons": "Sovg'a kuponlari",
     "ValuableItems": "Qimmatli narsalar",
     "MyHistory": "Mening tarixim",
-    "Points": "Ballar"
+    "Points": "Ballar",
+    "DeliveryPerson": "Yetkazib beruvchi",
+    "DeliveryPersonDetails": "Yetkazib beruvchi tafsilotlari"
   }
 }

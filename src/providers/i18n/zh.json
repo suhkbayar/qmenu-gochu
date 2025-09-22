@@ -345,6 +345,8 @@
     "GiftCoupons": "礼品券",
     "ValuableItems": "贵重物品",
     "MyHistory": "我的历史",
-    "Points": "积分"
+    "Points": "积分",
+    "DeliveryPerson": "送货员",
+    "DeliveryPersonDetails": "送货员详情"
   }
 }

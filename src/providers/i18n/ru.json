@@ -322,6 +322,8 @@
     "GiftCoupons": "Подарочные купоны",
     "ValuableItems": "Ценные предметы",
     "MyHistory": "Моя история",
-    "Points": "Очки"
+    "Points": "Очки",
+    "DeliveryPerson": "Курьер",
+    "DeliveryPersonDetails": "Детали курьера"
   }
 }

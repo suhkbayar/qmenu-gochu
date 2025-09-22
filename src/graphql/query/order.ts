@@ -40,6 +40,7 @@ export const ORDER_FIELDS = gql`
     vatDate
     vatLottery
     vatData
+    additional
     orderedAt
     acceptedAt
     preparingAt
