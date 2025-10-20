@@ -16,6 +16,7 @@ import { FiEdit3 } from 'react-icons/fi';
 import toLocation from '../../assets/delivery/to_location.svg';
 import timer from '../../assets/delivery/timer.svg';
 import { useNotificationContext } from '../../providers/notification';
+import moment from 'moment';
 
 const filterBanks = ['QPay', 'UPT', 'Upoint', 'QPay2', 'GLP'];
 
@@ -81,6 +82,11 @@ const Index = () => {
     if (paying) return;
     if (CARD_PAYMENTS.includes(paymentType)) return;
     if (paymentType === PAYMENT_TYPE.Cash) return;
+
+    if (!deliveryDateValid()) {
+      showNotification(NotificationType.WARNING, 'Хүргэх хугацаа дууссан байна. Захиалгаа дахин засах хэрэгтэй.');
+      return;
+    }
 
     let input = {
       buyer: orderStore.buyer,
@@ -169,6 +175,24 @@ const Index = () => {
 
   const goUserInfo = () => {
     router.push(`/user-info?id=${participant.id}&order=${id}`);
+  };
+
+  const deliveryDateValid = () => {
+    const now = moment();
+
+    const rawDate = data?.getOrder?.deliveryDate?.trim();
+    if (!rawDate) return false;
+
+    const [startPart] = rawDate.split(' - ');
+    const startTime = startPart.trim();
+
+    const deliveryDate = moment(startTime, 'YYYY-MM-DD HH:mm', true);
+
+    if (!deliveryDate.isValid()) {
+      return false;
+    }
+
+    return now.isBefore(deliveryDate);
   };
 
   return (
@@ -278,7 +302,9 @@ const Index = () => {
             <button
               onClick={handleSubmit(onSubmit)}
               className={`flex gap-4  font-semibold cursor-pointer place-content-center items-center rounded-lg ${
-                loading || isEmpty(paymentType) ? 'bg-gray-300 text-gray-500' : 'bg-current text-white'
+                loading || isEmpty(paymentType) || !deliveryDateValid()
+                  ? 'bg-gray-300 text-gray-500'
+                  : 'bg-current text-white'
               } px-4 py-4 text-sm`}
             >
               <span>{t('mainPage.Payment')}</span>

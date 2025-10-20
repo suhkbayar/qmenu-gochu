@@ -45,6 +45,24 @@ export const OrderModal = ({ orderId, orderVisible, onClose }) => {
     return orderDate.isSame(today, 'day');
   };
 
+  const deliveryDateValid = () => {
+    const now = moment();
+
+    const rawDate = data?.getOrder?.deliveryDate?.trim();
+    if (!rawDate) return false;
+
+    const [startPart] = rawDate.split(' - ');
+    const startTime = startPart.trim();
+
+    const deliveryDate = moment(startTime, 'YYYY-MM-DD HH:mm', true);
+
+    if (!deliveryDate.isValid()) {
+      return false;
+    }
+
+    return now.isBefore(deliveryDate);
+  };
+
   const convertState = (state: any) => {
     switch (state) {
       case DRAFT_TYPE.ACCEPTED:
@@ -178,7 +196,7 @@ export const OrderModal = ({ orderId, orderVisible, onClose }) => {
             </div>
           </Modal.Body>
 
-          {data.getOrder?.paymentState !== 'PAID' && isOrderFromToday() && (
+          {data.getOrder?.paymentState !== 'PAID' && isOrderFromToday() && deliveryDateValid() && (
             <>
               {participant?.orderable && (
                 <>
