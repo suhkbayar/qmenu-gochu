@@ -221,19 +221,48 @@ const Index = () => {
       // const now = new Date('2025-03-13T00:08:00');
       const isToday = selectedDate === 'Today';
 
-      const intervals = [
-        { start: '12:00', end: '13:00' },
-        { start: '13:00', end: '14:00' },
-        { start: '14:00', end: '15:30' },
-        { start: '15:30', end: '17:00' },
-        { start: '17:00', end: '19:00' },
-        { start: '18:00', end: '20:00' },
-        { start: '19:00', end: '21:00' },
-        { start: '20:00', end: '21:30' },
-        { start: '21:00', end: '22:30' },
-        { start: '22:00', end: '23:00' },
-        { start: '23:00', end: '00:00' },
-      ];
+      const selectedDateMoment = moment(item.date);
+      const isDecember31 = selectedDateMoment.format('MM-DD') === '12-31';
+
+      const targetCategoryId = '3515c1eb-1d9f-4347-9dab-2b9e88aa0aa1';
+      const category = participant?.menu?.categories?.find((category) => category.id === targetCategoryId);
+      const productsInTargetCategory = category
+        ? [...category.products, ...category.children.flatMap((child: any) => child.products)]
+        : [];
+      const targetVariants = productsInTargetCategory?.flatMap((product) => product.variants);
+      const hasSpecialCategoryProduct = order?.items?.some((item) => {
+        return targetVariants.some((variant) => item?.id === variant?.id);
+      });
+
+      if (isDecember31 && hasSpecialCategoryProduct) {
+        setTimes([]);
+        return;
+      }
+
+      const intervals = isDecember31
+        ? [
+            { start: '09:30', end: '10:30' },
+            { start: '10:30', end: '12:00' },
+            { start: '12:00', end: '13:30' },
+            { start: '13:30', end: '15:00' },
+            { start: '15:00', end: '16:30' },
+            { start: '16:30', end: '18:00' },
+            { start: '18:00', end: '19:30' },
+            { start: '19:30', end: '21:00' },
+          ]
+        : [
+            { start: '12:00', end: '13:00' },
+            { start: '13:00', end: '14:00' },
+            { start: '14:00', end: '15:30' },
+            { start: '15:30', end: '17:00' },
+            { start: '17:00', end: '19:00' },
+            { start: '18:00', end: '20:00' },
+            { start: '19:00', end: '21:00' },
+            { start: '20:00', end: '21:30' },
+            { start: '21:00', end: '22:30' },
+            { start: '22:00', end: '23:00' },
+            { start: '23:00', end: '00:00' },
+          ];
 
       if (isToday) {
         const currentHour = now.getHours();
